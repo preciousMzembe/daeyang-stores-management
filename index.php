@@ -11,24 +11,57 @@
 </head>
 
 <body>
-    <div class="login">
-        <div class="inner_login">
-            <div class="image"><img src="files/icons/logo.png" alt=""></div>
-            <div class="title">Daeyang Stores Management System</div>
+    <section class="wrapper">
+        <div class="wrapper_in">
+            <!-- image -->
+            <div class="image_pane">
+                <img src="./files/icons/login_image.png" alt="">
+            </div>
 
-            <form class="login_form">
-                <div class="login_title">Login</div>
+            <!-- login information -->
+            <form class="login">
+                <!-- icon and name-->
+                <div class="icon_name">
+                    <div class="icon_pane">
+                        <img src="./files/icons/logo.png" alt="">
+                    </div>
+                    <div class="name_pane">DYUNI Stores Management</div>
+                </div>
 
-                <div class="input_label">Username</div>
-                <div class="username_input input"><input type="text" name="username" id="username" placeholder="Username"></div>
+                <!-- login details -->
+                <div class="login_headings">
+                    <div class="title_pane">Login</div>
+                    <div class="subtitle_pane">login to access your account</div>
+                </div>
 
-                <div class="input_label">Password</div>
-                <div class="password_input input"><input type="password" name="password" id="password" placeholder="Password"></div>
+                <div class="form_details">
+                    <!-- username -->
+                    <div class="form_field">
+                        <div class="form_label">Username</div>
+                        <div class="form_input">
+                            <input type="text" name="" id="">
+                        </div>
+                    </div>
 
-                <div class="login_button"><input type="submit" value="Login"></div>
+                    <!-- password -->
+                    <div class="form_field">
+                        <div class="form_label password_label">
+                            <div>Password</div>
+                            <div class="forgot_password">Forgot password?</div>
+                        </div>
+                        <div class="form_input">
+                            <input type="password" name="" id="">
+                        </div>
+                    </div>
+
+                    <!-- login button -->
+                    <div class="form_field">
+                        <input class="login_button" type="submit" value="Login">
+                    </div>
+                </div>
             </form>
         </div>
-    </div>
+    </section>
 </body>
 
 </html>
