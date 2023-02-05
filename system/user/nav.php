@@ -15,12 +15,19 @@
         <div class="nav_option <?php if (strpos($getWholeUrl, "index") == true) {
                                     echo 'active';
                                 } ?>" onclick="window.location='index.php'">Dashboard</div>
+
         <div class="nav_option <?php if (strpos($getWholeUrl, "items") == true) {
                                     echo 'active';
                                 } ?>" onclick="window.location='items.php'">Items</div>
+
+        <div class="nav_option <?php if (strpos($getWholeUrl, "stockin") == true) {
+                                    echo 'active';
+                                } ?>" onclick="window.location='stockin.php'">Stock In</div>
+
         <div class="nav_option <?php if (strpos($getWholeUrl, "stockout") == true) {
                                     echo 'active';
-                                } ?>" onclick="window.location='stockout.php'">Stock out</div>
+                                } ?>" onclick="window.location='stockout.php'">Stock Out</div>
+                                
         <div class="nav_option <?php if (strpos($getWholeUrl, "notifications") == true) {
                                     echo 'active';
                                 } ?>" onclick="window.location='notifications.php'">Notifications</div>

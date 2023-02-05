@@ -1,0 +1,79 @@
+/* top pane */
+.items_top_pane{
+    font-size: 20px;
+    color: gray;
+    padding-bottom: 20px;
+}
+.items_top_pane span{
+    color: #8b5a1c;
+}
+
+/* search and print report pane */
+.search_print_pane{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+.search_pane{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.search_pane input{
+    width: 250px;
+    background-color: whitesmoke;
+    border: 1px solid rgb(230, 230, 230);
+    height: 40px;
+    outline: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+.search_button{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.search_pane img{
+    width: 30px;
+}
+
+.print_report_pane{
+    color: gray;
+    font-size: 14px;
+}
+.print_report_options{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 5px;
+}
+.print_report_options>div{
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.print_report_options img{
+    width: 20px;
+}
+
+/* items list pane */
+.items_list_title{
+    padding-bottom: 20px;
+}
+
+.items_list_pane{
+    width: 100%;
+    min-height: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    border: 1px solid rgb(230, 230, 230);
+}

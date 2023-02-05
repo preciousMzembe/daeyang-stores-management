@@ -11,7 +11,7 @@ secondary color #8b5a1c
 }
 
 section {
-    padding: 0px 50px;
+    padding: 0px 100px;
 }
 
 .top_pane {
@@ -21,7 +21,7 @@ section {
     align-items: center;
     justify-content: space-between;
     background-color: #e09d001a;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .top_pane>div {
@@ -117,14 +117,14 @@ section {
 .body_pane{
     height: 100vh;
     display: flex;
-    gap: 30px;
+    gap: 50px;
 }
 
 .nav_pane{
-    width: 200px;
+    width: 300px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 .details_pane{
     width: 100%;

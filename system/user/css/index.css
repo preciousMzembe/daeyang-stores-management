@@ -1,0 +1,175 @@
+/* welcome user */
+.welcome_pane{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.welcome_pane_user {
+    font-size: 20px;
+    color: gray;
+    padding-bottom: 20px;
+}
+
+.welcome_pane_user span {
+    color: #8b5a1c;
+}
+
+/* print report */
+.print_report_title{
+    font-size: 14px;
+    color: gray;
+    padding-bottom: 5px;
+}
+
+.print_report_form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+} 
+.print_report_form input{
+    border: none;
+    outline: none;
+    background-color: transparent;
+    width: 80px;
+}
+
+.print_report_input{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px;
+    background-color: whitesmoke;
+    border-radius: 5px;
+    border: 1px solid rgb(230, 230, 230);
+}
+.print_report_input>div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* calendar icons */
+.ui-datepicker-trigger{
+    width: 20px;
+    cursor: pointer;
+}
+
+.print_report_button{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.print_report_button img{
+    width: 20px;
+}
+  
+
+/* stock overview */
+.check_overview_title {
+    padding-bottom: 10px;
+    color: darkgray;
+    font-size: 14px;
+}
+
+.stock_overview_pane {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 20px;
+    row-gap: 20px;
+    padding-bottom: 30px;
+}
+
+.stock_overview_block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+
+    padding: 30px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    border: 1px solid rgb(230, 230, 230);
+}
+
+.stock_icon {
+    min-width: 50px;
+    min-height: 50px;
+    background-color: #8b5b1cc0;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stock_icon img {
+    width: 30px;
+}
+
+.stock_name {
+    color: gray;
+    padding-bottom: 10px;
+}
+
+.stock_number {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #e09d00;
+}
+
+.stock_number span {
+    font-size: 14px;
+    font-weight: normal;
+    color: gray;
+}
+
+/* items overview */
+.items_overview_pane {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    column-gap: 20px;
+    row-gap: 20px;
+}
+
+.stock_in_out_title {
+    color: darkgray;
+    font-size: 14px;
+    padding-bottom: 10px;
+}
+
+/* stock in-out table */
+.stock_in_out_table {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+    border: 1px solid rgb(230, 230, 230);
+    min-height: 200px;
+}
+
+.stock_in_headings,
+.stock_in_item {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.stock_out_headings,
+.stock_out_item {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.stock_in_headings,
+.stock_out_headings {
+    color: #8b5a1c;
+}
+
+.stock_in_item,
+.stock_out_item {
+    padding-top: 20px;
+    font-size: 14px;
+    color: gray;
+}

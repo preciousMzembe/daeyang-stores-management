@@ -7,10 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="../../files/icons/logo.png" />
     <link rel="stylesheet" href="./css/top.css">
+    <link href="../../files/js/jquery-ui.css" rel="Stylesheet" type="text/css" />
     <title>DSMS</title>
 </head>
 
 <body>
+
+    <!-- 
+    Daeyang Stores Management System.
+    Auther:    Precious Mzembe.
+    ID Number: BScICT/19/054.
+ -->
+
     <section class="top_pane">
         <!-- logo -->
         <div class="logo_pane">
@@ -45,8 +53,9 @@
     </section>
 
     <script src="../../files/js/jquery-3.6.3.min.js"></script>
+    <script type="text/javascript" src="../../files/js/jquery-ui.js"></script>
     <script>
-        function show_profile_dropdown(){
+        function show_profile_dropdown() {
             $(".dropdown_pane").toggle(500);
         }
     </script>
