@@ -1,9 +1,10 @@
 /* welcome user */
-.welcome_pane{
+.welcome_pane {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .welcome_pane_user {
     font-size: 20px;
     color: gray;
@@ -15,26 +16,27 @@
 }
 
 /* print report */
-.print_report_title{
+.print_report_title {
     font-size: 14px;
     color: gray;
     padding-bottom: 5px;
 }
 
-.print_report_form{
+.print_report_form {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-} 
-.print_report_form input{
+}
+
+.print_report_form input {
     border: none;
     outline: none;
     background-color: transparent;
     width: 80px;
 }
 
-.print_report_input{
+.print_report_input {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -43,29 +45,31 @@
     border-radius: 5px;
     border: 1px solid rgb(230, 230, 230);
 }
-.print_report_input>div{
+
+.print_report_input>div {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
 /* calendar icons */
-.ui-datepicker-trigger{
+.ui-datepicker-trigger {
     width: 20px;
     cursor: pointer;
 }
 
-.print_report_button{
+.print_report_button {
     width: 20px;
     height: 20px;
     cursor: pointer;
     display: flex;
     align-items: center;
 }
-.print_report_button img{
+
+.print_report_button img {
     width: 20px;
 }
-  
+
 
 /* stock overview */
 .check_overview_title {
@@ -154,12 +158,14 @@
 .stock_in_item {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    text-transform: capitalize;
 }
 
 .stock_out_headings,
 .stock_out_item {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    text-transform: capitalize;
 }
 
 .stock_in_headings,
@@ -169,7 +175,13 @@
 
 .stock_in_item,
 .stock_out_item {
-    padding-top: 20px;
+    margin-top: 10px;
+    padding: 10px 0px;
     font-size: 14px;
     color: gray;
+}
+
+.stock_in_item:hover,
+.stock_out_item:hover {
+    background-color: rgb(240, 240, 240);
 }
