@@ -92,6 +92,7 @@
 }
 
 .items_list_pane {
+    position: relative;
     width: 100%;
     min-height: 400px;
     padding: 20px;
@@ -139,6 +140,28 @@
     text-transform: none;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.not_found_pane{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.not_found_text{
+    color: gray;
+    font-size: 20px;
+    padding-bottom: 10px;
+}
+.not_found_image{
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.not_found_image img{
+    width: 80px;
 }
 
 
@@ -250,6 +273,7 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     margin-top: 20px;
+    text-transform: capitalize;
 }
 
 .item_in_out_top:hover, .item_in_or_out_bottom:hover{
@@ -289,7 +313,7 @@
 }
 
 .item_more_details_title {
-    font-size: 14px;
+    font-size: 12px;
     color: gray;
 }
 

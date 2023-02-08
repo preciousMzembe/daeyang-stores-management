@@ -13,6 +13,16 @@
     <!-- top -->
     <?php require("./top.php") ?>
 
+    <!-- databse functions for this file --------------------------------------------- -->
+    <?php
+
+    // get items
+    $items = $database->get_items();
+
+    ?>
+
+    <!-- ---------------------------------------------------------------------------- -->
+
     <!-- body -->
     <section class="body_pane">
         <!-- navigation -->
@@ -54,24 +64,34 @@
             <!-- items list -->
             <div class="items_list_title">Items List</div>
             <div class="items_list_pane">
-                <!-- list headings -->
-                <div class="items_headings">
-                    <div>Item</div>
-                    <div>Quantity</div>
-                    <div>Last Stock In</div>
-                    <div>Last Stock Out</div>
-                    <div></div>
-                </div>
+                <!-- check if there are items in the database -->
+                <?php if (!empty($items)) { ?>
+                    <!-- list headings -->
+                    <div class="items_headings">
+                        <div>Item</div>
+                        <div>Quantity</div>
+                        <div>Last Stock In</div>
+                        <div>Last Stock Out</div>
+                        <div></div>
+                    </div>
 
-                <!-- list item -->
-                <?php for ($i = 1; $i <= 5; $i++) { ?>
-                    <div class="items_item">
-                        <div>note book</div>
-                        <div>30</div>
-                        <div>03/02/2023</div>
-                        <div>03/01/2023</div>
-                        <div>
-                            <div class="view_item_button" onclick="show_hide_item()">view more</div>
+                    <!-- list item -->
+                    <?php foreach ($items as $item) { ?>
+                        <div class="items_item">
+                            <div><?php echo $item['name'] ?></div>
+                            <div><?php echo number_format($item['balance']) ?></div>
+                            <div><?php echo date("d M Y", strtotime($item['stock_in_date'])) ?></div>
+                            <div><?php echo date("d M Y", strtotime($item['stock_out_date']) ?? "") ?></div>
+                            <div>
+                                <div class="view_item_button" onclick="show_hide_item()">view more</div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                <?php }else{ ?>
+                    <div class="not_found_pane">
+                        <div class="not_found_text">no items to show</div>
+                        <div class="not_found_image">
+                            <img src="../../files/icons/not_found.png" alt="">
                         </div>
                     </div>
                 <?php } ?>
@@ -245,7 +265,7 @@
         // hide and how item
         $(".item_details_pane").hide();
 
-        function show_hide_item(){
+        function show_hide_item() {
             $(".item_details_pane").toggle();
         }
 

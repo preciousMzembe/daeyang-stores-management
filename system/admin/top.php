@@ -1,16 +1,3 @@
-<?php
-
-// database connection
-require("./database.php");
-$database = new Database();
-
-// logout
-if (isset($_POST['logout'])) {
-    $database->logout();
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -41,7 +28,7 @@ if (isset($_POST['logout'])) {
 
         <!-- profile -->
         <div class="profile_pane">
-            <div class="user_name"><?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?></div>
+            <div class="user_name">Precious Mzembe</div>
             <div class="profile_image"><img src="../../files/icons/user2.png" alt=""></div>
             <div class="drop_down" onclick="show_profile_dropdown()"><img src="../../files/icons/down.png" alt=""></div>
 
@@ -50,14 +37,14 @@ if (isset($_POST['logout'])) {
                 <!-- profile -->
                 <div class="drop_down_profile">
                     <div class="drop_down_image"><img src="../../files/icons/user2.png" alt=""></div>
-                    <div class="drop_down_name"><?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?></div>
+                    <div class="drop_down_name">Precious Mzembe</div>
                 </div>
 
                 <div class="dropdown_option profile_option">
                     <img src="../../files/icons/user.png" alt="">
                     Profile
                 </div>
-                <div class="dropdown_option logout_option" onclick="logout();">
+                <div class="dropdown_option logout_option">
                     <img src="../../files/icons/logout.png" alt="">
                     Logout
                 </div>
@@ -70,24 +57,6 @@ if (isset($_POST['logout'])) {
     <script>
         function show_profile_dropdown() {
             $(".dropdown_pane").toggle(500);
-        }
-
-        function logout() {
-            let url = window.location.href;
-
-            const form = document.createElement('form');
-            form.method = "post";
-            form.action = url;
-
-            const hiddenField = document.createElement('input');
-            hiddenField.type = 'hidden';
-            hiddenField.name = "logout";
-            hiddenField.value = "logout";
-
-            form.appendChild(hiddenField);
-
-            document.body.appendChild(form);
-            form.submit();
         }
     </script>
 </body>

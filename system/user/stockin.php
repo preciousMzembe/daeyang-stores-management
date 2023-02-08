@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +9,28 @@
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/items.css">
 </head>
+
 <body>
     <!-- top -->
     <?php require("./top.php") ?>
+
+    <!-- databse functions for this file --------------------------------------------- -->
+    <?php
+
+    // get stock in
+    $stock_in = $database->get_stock_in();
+
+    // get items list
+    $items = $database->get_items(true);
+
+    // stock in process
+    if (isset($_POST['stock_in'])){
+        $database->stock_in($_POST);
+    }
+
+    ?>
+
+    <!-- ---------------------------------------------------------------------------- -->
 
     <!-- body -->
     <section class="body_pane">
@@ -83,32 +103,198 @@
             <!-- items list -->
             <div class="items_list_title">
                 <div class="">Stock In Updates</div>
-                <div class="add_stock_button">Stock In</div>
+                <div class="add_stock_button" onclick="show_hide_item()">Stock In</div>
             </div>
             <div class="items_list_pane">
-                <!-- list headings -->
-                <div class="items_headings">
-                    <div>Item</div>
-                    <div>Quantity</div>
-                    <div>Price / Unit</div>
-                    <div>Date</div>
-                    <div></div>
-                </div>
+                <!-- check if there are any stock in -->
+                <?php if (!empty($stock_in)) { ?>
+                    <!-- list headings -->
+                    <div class="items_headings">
+                        <div>Item</div>
+                        <div>Quantity</div>
+                        <div>Price / Unit</div>
+                        <div>Date</div>
+                        <div></div>
+                    </div>
 
-                <!-- list item -->
-                <?php for ($i = 1; $i <= 5; $i++) { ?>
-                    <div class="items_item">
-                        <div>note book</div>
-                        <div>30</div>
-                        <div>MK 3,000</div>
-                        <div>03/01/2023</div>
-                        <div>
-                            <div class="view_item_button">details</div>
+                    <!-- list item -->
+                    <?php for ($i = 1; $i <= 5; $i++) { ?>
+                        <!-- in or out information -->
+                        <div class="item_in_or_out">
+                            <!-- item top row -->
+                            <div class="item_in_out_top">
+                                <div class="">note book</div>
+                                <div class="">10</div>
+                                <div class="">MK 2,000</div>
+                                <div class="">03/03/2023</div>
+                                <div class="item_drop">
+                                    <div class="item_drop_button item_drop_button_<?php echo $i ?>" onclick="show_hide_item_info(<?php echo $i ?>)">
+                                        <img src="../../files/icons/down2.png" alt="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- item more details -->
+                            <div class="item_in_or_out_bottom item_in_or_out_bottom_<?php echo $i ?>">
+                                <div class="">
+                                    <div class="item_more_details_title">Total Amount</div>
+                                    <div class="item_more_details_detail"><span>MK</span> 20,000</div>
+                                </div>
+
+                                <div class="">
+                                    <div class="item_more_details_title">Supplier</div>
+                                    <div class="item_more_details_detail">eagle</div>
+                                </div>
+
+                                <div class="">
+                                    <div class="item_more_details_title">Deliverd By</div>
+                                    <div class="item_more_details_detail">name</div>
+                                </div>
+
+                                <div class="">
+                                    <div class="item_more_details_title">Checked By</div>
+                                    <div class="item_more_details_detail">name</div>
+                                </div>
+
+                                <div class="">
+                                    <div class="item_more_details_title">Issued By</div>
+                                    <div class="item_more_details_detail">name</div>
+                                </div>
+
+                                <div class="">
+                                    <div class="item_more_details_title">Remarks</div>
+                                    <div class="item_more_details_detail">Lorem ipsum dolor sit</div>
+                                </div>
+
+                                <div class="">
+                                    <div class="item_more_details_title">Balance</div>
+                                    <div class="item_more_details_detail">15</div>
+                                </div>
+
+                                <div class="">
+                                    <!-- <div class="item_more_details_title">print</div> -->
+                                    <div class="item_more_details_detail">
+                                        <div class="item_in_out_print_button"><img src="../../files/icons/download.png" alt=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                <?php } else { ?>
+                    <div class="not_found_pane">
+                        <div class="not_found_text">no stock in to show</div>
+                        <div class="not_found_image">
+                            <img src="../../files/icons/not_found.png" alt="">
                         </div>
                     </div>
                 <?php } ?>
             </div>
         </div>
     </section>
+
+    <!-- Stock in form -->
+    <section class="item_details_pane stock_in_process_pane">
+        <div class="item_details_pane_in">
+            <!-- close button -->
+            <div class="close_pane">
+                <div class="close_button" onclick="show_hide_item()">
+                    <img src="../../files/icons/close.png" alt="">
+                </div>
+            </div>
+
+            <!-- stock in form details -->
+            <div class="stock_in_form_title">Stock In Form</div>
+
+            <!-- form details -->
+            <form action="" method="post">
+                <div class="stock_in_inputs">
+                    <div class="">
+                        <div class="input_label">Item / Stock Name</div>
+                        <div>
+                            <!-- item name selection or new ite entry -->
+                            <select name="item" onchange="if($(this).val()=='customOption'){$(this).hide().prop('disabled',true);$('input[name=item]').show().prop('disabled', false).focus();$(this).val(null);}" required>
+                                <option></option>
+                                <option value="customOption">[new item]</option>
+                                <?php foreach ($items as $item) { ?>
+                                    <option value="<?php echo $item['name'] ?>"><?php echo $item['name'] ?></option>
+                                <?php } ?>
+                            </select>
+                            <input name="item" style="display:none;" disabled="disabled" onblur="if($(this).val()==''){$(this).hide().prop('disabled',true);$('select[name=item]').show().prop('disabled', false).focus();}" required>
+                        </div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Supplier</div>
+                        <div><input type="text" name="supplier" id=""></div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Quantity</div>
+                        <div><input type="number" name="quantity" id="" ></div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Price per Unit</div>
+                        <div><input type="text"  data-type="currency" name="price_per_unit" id="currency-field"></div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Total Amount</div>
+                        <div><input type="text" data-type="currency" name="total_amount" id=""></div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Remarks</div>
+                        <div><textarea name="remarks" id=""></textarea></div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Deliverd By</div>
+                        <div><input type="text" name="deliverd_by" id="" ></div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Checked By</div>
+                        <div><input type="text" name="checked_by" id="" ></div>
+                    </div>
+
+                    <div class="">
+                        <div class="input_label">Issued By</div>
+                        <div><input type="text" name="issued_by" id="" ></div>
+                    </div>
+                </div>
+
+                <!-- save button -->
+                <div class="stock_in_inputs stock_in_save_pane">
+                    <div></div>
+                    <div class="stock_in_save_button"><button type="submit" name="stock_in">Save</button></div>
+                    <div></div>
+                </div>
+            </form>
+
+        </div>
+    </section>
+
+    <script src="../../files/js/currency.js"></script>
+    <script>
+        // hide and how item
+        $(".stock_in_process_pane").hide();
+
+        function show_hide_item() {
+            $(".stock_in_process_pane").toggle();
+        }
+
+
+        // hide and how item more details
+        $(".item_in_or_out_bottom").hide();
+
+        function show_hide_item_info(id) {
+            let button_class_name = "item_drop_button_" + id
+            let info_class_name = "item_in_or_out_bottom_" + id
+            $('.' + button_class_name).toggleClass("button_up");
+            $('.' + info_class_name).toggle();
+        }
+    </script>
 </body>
+
 </html>

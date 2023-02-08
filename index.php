@@ -1,3 +1,16 @@
+<?php
+
+// database file
+require("./database.php");
+$database = new Database();
+
+// login
+if (isset($_POST['login'])) {
+    $errors = $database->login($_POST);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,7 +32,7 @@
             </div>
 
             <!-- login information -->
-            <form class="login">
+            <form class="login" action="index.php" method="POST">
                 <!-- icon and name-->
                 <div class="icon_name">
                     <div class="icon_pane">
@@ -37,10 +50,11 @@
                 <div class="form_details">
                     <!-- username -->
                     <div class="form_field">
-                        <div class="form_label">Username</div>
+                        <div class="form_label">Email</div>
                         <div class="form_input">
-                            <input type="text" name="" id="">
+                            <input type="email" name="email" value="<?php echo $_POST['email'] ?? ""; ?>" required>
                         </div>
+                        <div class="input_error"><?php echo $errors['email'] ?? ""; ?></div>
                     </div>
 
                     <!-- password -->
@@ -50,13 +64,14 @@
                             <div class="forgot_password">Forgot password?</div>
                         </div>
                         <div class="form_input">
-                            <input type="password" name="" id="">
+                            <input type="password" name="password" value="<?php echo $_POST['password'] ?? ""; ?>" required>
                         </div>
+                        <div class="input_error"><?php echo $errors['password'] ?? ""; ?></div>
                     </div>
 
                     <!-- login button -->
                     <div class="form_field">
-                        <input class="login_button" type="submit" value="Login">
+                        <input class="login_button" type="submit" name="login" value="Login">
                     </div>
                 </div>
             </form>
