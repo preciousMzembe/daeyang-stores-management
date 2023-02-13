@@ -195,18 +195,13 @@
                         <!-- stock value -->
                         <div class="item_stock_value">
                             <div class="item_current_stock_head">Stock Value</div>
-                            <div class="item_current_stock_number"><span>MK</span> <?php echo number_format((int)$item_details['balance'] * (double)$item_details['price_per_unit']) ?> </div>
+                            <div class="item_current_stock_number"><span>MK</span> <?php echo number_format((int)$item_details['balance'] * (float)$item_details['price_per_unit']) ?> </div>
                         </div>
                     </div>
 
                     <!-- stock inn and out details -->
                     <div class="stock_in_out_details_title">stock in and out details</div>
 
-                </div>
-
-                <!-- details table moving part-->
-                <div class="item_stock_in_and_out_table">
-                    <!-- headings -->
                     <div class="item_stock_in_and_out_headings">
                         <div>Date</div>
                         <div>In</div>
@@ -215,59 +210,108 @@
                         <div></div>
                     </div>
 
+                </div>
+
+                <!-- details table moving part-->
+                <div class="item_stock_in_and_out_table">
+                    <!-- headings -->
+                    <!-- <div class="item_stock_in_and_out_headings">
+                        <div>Date</div>
+                        <div>In</div>
+                        <div>Out</div>
+                        <div>Balance</div>
+                        <div></div>
+                    </div> -->
+
                     <div class="item_stock_details_rows">
-                        <?php foreach ($item_stock_in_and_out as $stock) { ?>
+                        <?php
+                        $i = 1;
+                        foreach ($item_stock_in_and_out as $stock) {
+                        ?>
                             <!-- in or out information -->
                             <div class="item_in_or_out">
                                 <!-- item top row -->
                                 <div class="item_in_out_top">
                                     <div class=""><?php echo date("d M Y", strtotime($stock['created_at'])) ?></div>
-                                    <div class=""><?php if ($stock['in_balance'] != null){ echo number_format($stock['quantity']);} ?></div>
-                                    <div class=""><?php if ($stock['out_balance'] != null){ echo number_format($stock['quantity']);} ?></div>
-                                    <div class=""><?php if ($stock['in_balance'] != null){ echo number_format($stock['in_balance']);}else{echo number_format($stock['out_balance']);} ?></div>
+                                    <div class=""><?php if ($stock['in_balance'] != null) {
+                                                        echo number_format($stock['quantity']);
+                                                    } ?></div>
+                                    <div class=""><?php if ($stock['out_balance'] != null) {
+                                                        echo number_format($stock['quantity']);
+                                                    } ?></div>
+                                    <div class=""><?php if ($stock['in_balance'] != null) {
+                                                        echo number_format($stock['in_balance']);
+                                                    } else {
+                                                        echo number_format($stock['out_balance']);
+                                                    } ?></div>
                                     <div class="item_drop">
-                                        <div class="item_drop_button item_drop_button_<?php echo $stock['id'] ?>" onclick="show_hide_item_info(<?php echo $stock['id'] ?>)">
+                                        <div class="item_drop_button item_drop_button_<?php echo $stock['id'] . $i ?>" onclick="show_hide_item_info(<?php echo $stock['id'] . $i ?>)">
                                             <img src="../../files/icons/down2.png" alt="">
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- item more details -->
-                                <div class="item_in_or_out_bottom item_in_or_out_bottom_<?php echo $stock['id'] ?>">
-                                    <div class="">
-                                        <div class="item_more_details_title">Price / Unit</div>
-                                        <div class="item_more_details_detail"><span>MK</span> 1,000</div>
-                                    </div>
+                                <div class="item_in_or_out_bottom item_in_or_out_bottom_<?php echo $stock['id'] . $i;
+                                                                                        $i++; ?>">
+                                    <?php if ($stock['in_balance'] != null) { ?>
+                                        <!-- stock in information -->
+                                        <div class="">
+                                            <div class="item_more_details_title">Price / Unit</div>
+                                            <div class="item_more_details_detail"><span>MK</span> <?php echo number_format($stock['price_per_unit']) ?></div>
+                                        </div>
 
-                                    <div class="">
-                                        <div class="item_more_details_title">Total Amount</div>
-                                        <div class="item_more_details_detail"><span>MK</span> 20,000</div>
-                                    </div>
+                                        <div class="">
+                                            <div class="item_more_details_title">Total Amount</div>
+                                            <div class="item_more_details_detail"><span>MK</span> <?php echo number_format($stock['total_amount']) ?></div>
+                                        </div>
 
-                                    <div class="">
-                                        <div class="item_more_details_title">Suplier</div>
-                                        <div class="item_more_details_detail">eagle</div>
-                                    </div>
+                                        <div class="">
+                                            <div class="item_more_details_title">Supplier</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['supplier'] ?></div>
+                                        </div>
 
-                                    <div class="">
-                                        <div class="item_more_details_title">Deliverd By</div>
-                                        <div class="item_more_details_detail">name</div>
-                                    </div>
+                                        <div class="">
+                                            <div class="item_more_details_title">Deliverd By</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['deliverd_by'] ?></div>
+                                        </div>
 
-                                    <div class="">
-                                        <div class="item_more_details_title">Checked By</div>
-                                        <div class="item_more_details_detail">name</div>
-                                    </div>
+                                        <div class="">
+                                            <div class="item_more_details_title">Checked By</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['checked_by'] ?></div>
+                                        </div>
 
-                                    <div class="">
-                                        <div class="item_more_details_title">Issued By</div>
-                                        <div class="item_more_details_detail">name</div>
-                                    </div>
+                                        <div class="">
+                                            <div class="item_more_details_title">Issued By</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['issued_by'] ?></div>
+                                        </div>
 
-                                    <div class="">
-                                        <div class="item_more_details_title">Remarks</div>
-                                        <div class="item_more_details_detail">Lorem ipsum dolor sit</div>
-                                    </div>
+                                        <div class="">
+                                            <div class="item_more_details_title">Remarks</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['remarks'] ?></div>
+                                        </div>
+                                    <?php } else { ?>
+                                        <!-- stock out information -->
+                                        <div class="">
+                                            <div class="item_more_details_title">Purpose</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['purpose'] ?></div>
+                                        </div>
+
+                                        <div class="">
+                                            <div class="item_more_details_title">Requested By</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['requested_by'] ?></div>
+                                        </div>
+
+                                        <div class="">
+                                            <div class="item_more_details_title">Checked By</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['checked_by'] ?></div>
+                                        </div>
+
+                                        <div class="">
+                                            <div class="item_more_details_title">Distributed By</div>
+                                            <div class="item_more_details_detail"><?php echo $stock['distributed_by'] ?></div>
+                                        </div>
+                                    <?php } ?>
 
                                     <div class="">
                                         <!-- <div class="item_more_details_title">print</div> -->

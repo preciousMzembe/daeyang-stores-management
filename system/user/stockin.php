@@ -112,7 +112,9 @@
             <!-- items list -->
             <div class="items_list_title">
                 <div class="">Stock In Updates</div>
-                <div class="add_stock_button" onclick="show_hide_item()">Stock In</div>
+                <?php if ($database->user_details['position'] == "user") { ?>
+                    <div class="add_stock_button" onclick="show_hide_item()">Stock In</div>
+                <?php } ?>
             </div>
             <div class="items_list_pane">
                 <!-- check if there are any stock in -->

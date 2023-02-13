@@ -31,7 +31,7 @@ class Database
         $password = $this->clean_input($data['password']);
 
         // get user data
-        $sql = "SELECT `id`, `email`, `password`, `position` FROM `users` WHERE `email` = '$email'";
+        $sql = "SELECT `id`, `email`, `password`, `position`, `status` FROM `users` WHERE `email` = '$email'";
         $results = mysqli_query($this->conn, $sql);
         $user = mysqli_fetch_assoc($results);
 
@@ -50,7 +50,7 @@ class Database
         $_SESSION['user_id'] = $user_id;
 
         // log into the system
-        if ($user['position'] === "user"){
+        if ($user['status'] = "1"){
             header("location: ./system/user/index.php");
         }
     }

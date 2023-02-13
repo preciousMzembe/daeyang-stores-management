@@ -113,7 +113,9 @@
             <!-- items list -->
             <div class="items_list_title">
                 <div class="">Stock Out Updates</div>
-                <div class="add_stock_button" onclick="show_hide_item()">Stock Out</div>
+                <?php if ($database->user_details['position'] == "user") { ?>
+                    <div class="add_stock_button" onclick="show_hide_item()">Stock Out</div>
+                <?php } ?>
             </div>
             <div class="items_list_pane">
                 <!-- check if there any stock out to show -->
