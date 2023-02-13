@@ -45,7 +45,7 @@
             <!-- welcome user and print report -->
             <div class="welcome_pane">
                 <!-- welcome user -->
-                <div class="welcome_pane_user">Welcome <span>Precious Mzembe</span></div>
+                <div class="welcome_pane_user">Welcome <span><?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?></span></div>
 
                 <!-- print report -->
                 <div class="print_report_pane">
@@ -181,11 +181,11 @@
                             </div>
 
                             <!-- stock out list -->
-                            <?php for ($i = 1; $i <= 8; $i++) { ?>
+                            <?php foreach ($recent_stock_out as $stock) { ?>
                                 <div class="stock_out_item">
-                                    <div class="">cable</div>
-                                    <div class="">20</div>
-                                    <div class="">02/02/2023</div>
+                                    <div class=""><?php echo $stock['item'] ?></div>
+                                    <div class=""><?php echo $stock['quantity'] ?></div>
+                                    <div class=""><?php echo date("d M Y", strtotime($stock['created_at'])) ?></div>
                                 </div>
                             <?php } ?>
                         <?php } else { ?>

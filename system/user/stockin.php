@@ -18,14 +18,23 @@
     <?php
 
     // get stock in
-    $stock_in = $database->get_stock_in();
+    if (isset($_POST['search_item'])) {
+        $search_item = trim($_POST['search_item']);
+        if ($search_item != "") {
+            $stock_in = $database->get_stock_in($item = $search_item);
+        } else {
+            $stock_in = $database->get_stock_in();
+        }
+    } else {
+        $stock_in = $database->get_stock_in();
+    }
 
     // get items list
     $items = $database->get_items(true);
 
     // stock in process
-    if (isset($_POST['stock_in'])){
-        $database->stock_in($_POST);
+    if (isset($_POST['stock_in'])) {
+        $errors = $database->stock_in($_POST);
     }
 
     ?>
@@ -47,12 +56,12 @@
             <!-- search and print report -->
             <div class="search_print_pane">
                 <!-- search -->
-                <div class="search_pane">
-                    <input type="text" name="item" id="item" placeholder="search item...">
-                    <div class="search_button">
+                <form action="stockin.php" method="POST" class="search_pane">
+                    <input type="text" name="search_item" id="item" placeholder="search item..." value="<?php echo $_POST['search_item'] ?? "" ?>">
+                    <button type="submit" class="search_button">
                         <img src="../../files/icons/search.png" alt="">
-                    </div>
-                </div>
+                    </button type="submit">
+                </form>
 
                 <!-- print report -->
                 <div class="print_report_pane">
@@ -112,63 +121,63 @@
                     <div class="items_headings">
                         <div>Item</div>
                         <div>Quantity</div>
-                        <div>Price / Unit</div>
+                        <div>Balance</div>
                         <div>Date</div>
                         <div></div>
                     </div>
 
                     <!-- list item -->
-                    <?php for ($i = 1; $i <= 5; $i++) { ?>
+                    <?php foreach ($stock_in as $stock) { ?>
                         <!-- in or out information -->
                         <div class="item_in_or_out">
                             <!-- item top row -->
                             <div class="item_in_out_top">
-                                <div class="">note book</div>
-                                <div class="">10</div>
-                                <div class="">MK 2,000</div>
-                                <div class="">03/03/2023</div>
+                                <div class=""><?php echo $stock['item'] ?></div>
+                                <div class=""><?php echo number_format($stock['quantity']) ?></div>
+                                <div class=""><?php echo number_format($stock['in_balance']) ?></div>
+                                <div class=""><?php echo date("d M Y", strtotime($stock['created_at']) ?? "") ?></div>
                                 <div class="item_drop">
-                                    <div class="item_drop_button item_drop_button_<?php echo $i ?>" onclick="show_hide_item_info(<?php echo $i ?>)">
+                                    <div class="item_drop_button item_drop_button_<?php echo $stock['id'] ?>" onclick="show_hide_item_info(<?php echo $stock['id'] ?>)">
                                         <img src="../../files/icons/down2.png" alt="">
                                     </div>
                                 </div>
                             </div>
 
                             <!-- item more details -->
-                            <div class="item_in_or_out_bottom item_in_or_out_bottom_<?php echo $i ?>">
+                            <div class="item_in_or_out_bottom item_in_or_out_bottom_<?php echo $stock['id'] ?>">
+                                <div class="">
+                                    <div class="item_more_details_title">Price per Unit</div>
+                                    <div class="item_more_details_detail">MK <?php echo number_format($stock['price_per_unit']) ?></div>
+                                </div>
+
                                 <div class="">
                                     <div class="item_more_details_title">Total Amount</div>
-                                    <div class="item_more_details_detail"><span>MK</span> 20,000</div>
+                                    <div class="item_more_details_detail"><span>MK</span> <?php echo number_format($stock['total_amount']) ?></div>
                                 </div>
 
                                 <div class="">
                                     <div class="item_more_details_title">Supplier</div>
-                                    <div class="item_more_details_detail">eagle</div>
+                                    <div class="item_more_details_detail"><?php echo $stock['supplier'] ?></div>
                                 </div>
 
                                 <div class="">
                                     <div class="item_more_details_title">Deliverd By</div>
-                                    <div class="item_more_details_detail">name</div>
+                                    <div class="item_more_details_detail"><?php echo $stock['deliverd_by'] ?></div>
                                 </div>
 
                                 <div class="">
                                     <div class="item_more_details_title">Checked By</div>
-                                    <div class="item_more_details_detail">name</div>
+                                    <div class="item_more_details_detail"><?php echo $stock['checked_by'] ?></div>
                                 </div>
 
                                 <div class="">
                                     <div class="item_more_details_title">Issued By</div>
-                                    <div class="item_more_details_detail">name</div>
+                                    <div class="item_more_details_detail"><?php echo $stock['issued_by'] ?></div>
                                 </div>
 
                                 <div class="">
                                     <div class="item_more_details_title">Remarks</div>
-                                    <div class="item_more_details_detail">Lorem ipsum dolor sit</div>
-                                </div>
-
-                                <div class="">
-                                    <div class="item_more_details_title">Balance</div>
-                                    <div class="item_more_details_detail">15</div>
+                                    <div class="item_more_details_detail"><?php echo $stock['remarks'] ?></div>
                                 </div>
 
                                 <div class="">
@@ -206,7 +215,7 @@
             <div class="stock_in_form_title">Stock In Form</div>
 
             <!-- form details -->
-            <form action="" method="post">
+            <form action="stockin.php" method="post">
                 <div class="stock_in_inputs">
                     <div class="">
                         <div class="input_label">Item / Stock Name</div>
@@ -216,7 +225,9 @@
                                 <option></option>
                                 <option value="customOption">[new item]</option>
                                 <?php foreach ($items as $item) { ?>
-                                    <option value="<?php echo $item['name'] ?>"><?php echo $item['name'] ?></option>
+                                    <option <?php if (!empty($_POST['item']) && $_POST['item'] == $item['name']) {
+                                                echo "selected";
+                                            } ?> value="<?php echo $item['name'] ?>"><?php echo $item['name'] ?></option>
                                 <?php } ?>
                             </select>
                             <input name="item" style="display:none;" disabled="disabled" onblur="if($(this).val()==''){$(this).hide().prop('disabled',true);$('select[name=item]').show().prop('disabled', false).focus();}" required>
@@ -225,42 +236,43 @@
 
                     <div class="">
                         <div class="input_label">Supplier</div>
-                        <div><input type="text" name="supplier" id=""></div>
+                        <div><input type="text" name="supplier" id="" value="<?php echo $_POST['supplier'] ?? "" ?>"></div>
                     </div>
 
                     <div class="">
                         <div class="input_label">Quantity</div>
-                        <div><input type="number" name="quantity" id="" ></div>
+                        <div><input type="number" min="1" name="quantity" id="" value="<?php echo $_POST['quantity'] ?? "" ?>" required></div>
+                        <div class="error_pane"><?php echo $errors['quantity'] ?? ""; ?></div>
                     </div>
 
                     <div class="">
                         <div class="input_label">Price per Unit</div>
-                        <div><input type="text"  data-type="currency" name="price_per_unit" id="currency-field"></div>
+                        <div><input type="text" data-type="currency" name="price_per_unit" id="currency-field" value="<?php echo $_POST['price_per_unit'] ?? "" ?>"></div>
                     </div>
 
                     <div class="">
                         <div class="input_label">Total Amount</div>
-                        <div><input type="text" data-type="currency" name="total_amount" id=""></div>
+                        <div><input type="text" data-type="currency" name="total_amount" id="" value="<?php echo $_POST['total_amount'] ?? "" ?>"></div>
                     </div>
 
                     <div class="">
                         <div class="input_label">Remarks</div>
-                        <div><textarea name="remarks" id=""></textarea></div>
+                        <div><textarea name="remarks" id=""><?php echo $_POST['remarks'] ?? "" ?></textarea></div>
                     </div>
 
                     <div class="">
                         <div class="input_label">Deliverd By</div>
-                        <div><input type="text" name="deliverd_by" id="" ></div>
+                        <div><input type="text" name="deliverd_by" id="" value="<?php echo $_POST['deliverd_by'] ?? "" ?>"></div>
                     </div>
 
                     <div class="">
                         <div class="input_label">Checked By</div>
-                        <div><input type="text" name="checked_by" id="" ></div>
+                        <div><input type="text" name="checked_by" id="" value="<?php echo $_POST['checked_by'] ?? "" ?>"></div>
                     </div>
 
                     <div class="">
                         <div class="input_label">Issued By</div>
-                        <div><input type="text" name="issued_by" id="" ></div>
+                        <div><input type="text" name="issued_by" id="" value="<?php echo $_POST['issued_by'] ?? "" ?>"></div>
                     </div>
                 </div>
 
@@ -279,6 +291,9 @@
     <script>
         // hide and how item
         $(".stock_in_process_pane").hide();
+        <?php if (!empty($errors)) { ?>
+            $(".stock_in_process_pane").show();
+        <?php } ?>
 
         function show_hide_item() {
             $(".stock_in_process_pane").toggle();

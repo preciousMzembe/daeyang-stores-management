@@ -62,7 +62,7 @@ class Database
     // get stock value
     function get_stock_value()
     {
-        $sql = "SELECT `stock_value` FROM `items`";
+        $sql = "SELECT `balance`, `price_per_unit` FROM `items`";
         $results = mysqli_query($this->conn, $sql);
         $items = mysqli_fetch_all($results, MYSQLI_ASSOC);
 
@@ -71,7 +71,8 @@ class Database
         } else {
             $stock_value = 0;
             foreach ($items as $item) {
-                $stock_value += (int)$item['stock_value'];
+                $item_price = (float)$item['price_per_unit'] * (int)$item['balance'];
+                $stock_value += (float)$item_price;
             }
             return $stock_value;
         }
@@ -87,7 +88,7 @@ class Database
     }
 
     // get items
-    function get_items($names = false)
+    function get_items($name = "all", $names = false)
     {
         if ($names) {
             $sql = "SELECT `name` FROM `items`";
@@ -95,9 +96,37 @@ class Database
             $sql = "SELECT * FROM `items`";
         }
 
+        // get single item
+        if ($name != "all") {
+            $sql = "SELECT * FROM `items` WHERE `name` LIKE '%$name%'";
+        }
+
         $results = mysqli_query($this->conn, $sql);
         $items = mysqli_fetch_all($results, MYSQLI_ASSOC);
         return $items;
+    }
+
+    // get item information
+    function get_item_information($name)
+    {
+        $sql = "SELECT * FROM `items` WHERE `name` LIKE '%$name%'";
+        $results = mysqli_query($this->conn, $sql);
+        $item = mysqli_fetch_assoc($results);
+        return $item;
+    }
+
+    // get item stock in and out
+    function get_item_stock_in_and_out($name)
+    {
+        $sql = "SELECT DISTINCT * 
+        FROM (
+            (SELECT `id`, `item`, `quantity`, `price_per_unit`, `total_amount`, `supplier`, `deliverd_by`, `checked_by`, `issued_by`, `remarks`, `in_balance`, NULL AS `out_balance`, NULL AS `purpose`, NUll AS `requested_by`, NULL AS `distributed_by`, `created_at` FROM `stock_in` WHERE `item` = '$name' ORDER BY `created_at`)
+            UNION ALL
+            (SELECT `id`, `item`, `quantity`, NULL AS `price_per_unit`, NULL AS `total_amount`, NULL AS `supplier`, NULL AS `deliverd_by`, `checked_by`, NULL AS `issued_by`, NULL AS `remarks`, NULL AS `in_balance`, `out_balance`, `purpose`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$name' ORDER BY `created_at`)
+        ) t ORDER BY `created_at` DESC";
+        $results = mysqli_query($this->conn, $sql);
+        $details = mysqli_fetch_all($results, MYSQLI_ASSOC);
+        return $details;
     }
 
     // get stock in
@@ -111,9 +140,9 @@ class Database
             }
         } else {
             if ($limit == 0) {
-                $sql = "SELECT * FROM `stock_in` WHERE `item_id` = '$item' ORDER BY `created_at` DESC";
+                $sql = "SELECT * FROM `stock_in` WHERE `item` LIKE '%$item%' ORDER BY `created_at` DESC";
             } else {
-                $sql = "SELECT * FROM `stock_in` WHERE `item_id` = '$item' ORDER BY `created_at` DESC LIMIT $limit";
+                $sql = "SELECT * FROM `stock_in` WHERE `item` LIKE '%$item$' ORDER BY `created_at` DESC LIMIT $limit";
             }
         }
 
@@ -133,9 +162,9 @@ class Database
             }
         } else {
             if ($limit == 0) {
-                $sql = "SELECT * FROM `stock_out` WHERE `item_id` = '$item' ORDER BY `created_at` DESC";
+                $sql = "SELECT * FROM `stock_out` WHERE `item` Like '%$item%' ORDER BY `created_at` DESC";
             } else {
-                $sql = "SELECT * FROM `stock_out` WHERE `item_id` = '$item' ORDER BY `created_at` DESC LIMIT $limit";
+                $sql = "SELECT * FROM `stock_out` WHERE `item` LIKE '%$item%' ORDER BY `created_at` DESC LIMIT $limit";
             }
         }
 
@@ -147,9 +176,16 @@ class Database
     // stock in process
     function stock_in($data)
     {
+        $errors = [];
+
         $name = $this->clean_input($data['item']);
         $supplier = $this->clean_input($data['supplier']);
+
         $quantity = $this->clean_input($data['quantity']);
+        if ($quantity <= 0) {
+            $errors['quantity'] = "quantity can not be less than 1";
+            return $errors;
+        }
 
         $price_per_unit = $this->clean_input($data['price_per_unit']);
         $price_per_unit = preg_replace("/[^0-9.]/", "", $price_per_unit);
@@ -193,13 +229,58 @@ class Database
         $stock_value = (float)$new_balance * (float)$new_price_per_unit;
 
         // update item
-        $sql = "UPDATE `items` SET `balance`='$new_balance',`price_per_unit`='$new_price_per_unit',`stock_in_date`='$stock_in_date',`stock_value`='$stock_value' WHERE `id` = '$item_id'";
+        $sql = "UPDATE `items` SET `balance`='$new_balance',`price_per_unit`='$new_price_per_unit',`stock_in_date`='$stock_in_date' WHERE `id` = '$item_id'";
         if (mysqli_query($this->conn, $sql)) {
             // stock in
             $sql = "INSERT INTO `stock_in`(`item`, `quantity`, `price_per_unit`, `total_amount`, `supplier`, `deliverd_by`, `checked_by`, `issued_by`, `remarks`, `in_balance`) 
                                     VALUES ('$name','$quantity','$price_per_unit','$total_amount','$supplier','$deliverd_by','$checked_by','$issued_by','$remarks','$new_balance')";
 
-            if(mysqli_query($this->conn, $sql)){
+            if (mysqli_query($this->conn, $sql)) {
+                header("Refresh:0");
+            }
+        }
+    }
+
+    // stock out process
+    function stock_out($data)
+    {
+        $errors = [];
+
+        $name = $this->clean_input($data['item']);
+
+        $quantity = $this->clean_input($data['quantity']);
+        if ($quantity <= 0) {
+            $errors['quantity'] = "quantity can not be less than 1";
+            return $errors;
+        }
+
+        $purpose = $this->clean_input($data['purpose']);
+        $requested_by = $this->clean_input($data['requested_by']);
+        $checked_by = $this->clean_input($data['checked_by']);
+        $distributed_by = $this->clean_input($data['distributed_by']);
+
+        // get quantity from database
+        $sql = "SELECT `balance` FROM `items` WHERE `name` = '$name'";
+        $results = mysqli_query($this->conn, $sql);
+        $balance = mysqli_fetch_assoc($results);
+
+        if ($quantity > $balance['balance']) {
+            echo $balance['balance'];
+            $errors['quantity'] = "there is only " . $balance['balance'] . " " . $name . " in stock";
+            return $errors;
+        }
+
+        $new_balance = $balance['balance'] - $quantity;
+        $stock_out_date = date("Y-m-d H:i:s");
+
+        // insert stock out
+        $sql = "INSERT INTO `stock_out`(`item`, `quantity`, `out_balance`, `purpose`, `requested_by`, `checked_by`, `distributed_by`) 
+                            VALUES ('$name','$quantity','$new_balance','$purpose','$requested_by','$checked_by','$distributed_by')";
+
+        if (mysqli_query($this->conn, $sql)) {
+            // ipdate item
+            $sql = "UPDATE `items` SET `balance`='$new_balance',`stock_out_date`='$stock_out_date' WHERE `name` = '$name'";
+            if (mysqli_query($this->conn, $sql)) {
                 header("Refresh:0");
             }
         }

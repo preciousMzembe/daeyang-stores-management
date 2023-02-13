@@ -40,6 +40,8 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    background-color: transparent;
+    border: none;
 }
 
 .search_pane img {
@@ -266,14 +268,24 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     color: #8b5a1c;
+    padding: 10px;
+}
+
+.item_in_or_out{
+    background-color: rgb(240, 240, 240);
+    margin-top: 20px; 
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .item_in_out_top,
 .item_in_or_out_bottom {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    margin-top: 20px;
     text-transform: capitalize;
+}
+.item_in_or_out_bottom{
+    margin-top: 20px;
 }
 
 .item_in_out_top:hover, .item_in_or_out_bottom:hover{
@@ -301,11 +313,6 @@
 
 .item_drop_button img {
     width: 20px;
-}
-
-.item_in_or_out_bottom {
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgb(230, 230, 230);
 }
 
 .item_in_or_out_bottom {
