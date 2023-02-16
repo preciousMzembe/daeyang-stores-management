@@ -27,10 +27,6 @@
         <div class="nav_option <?php if (strpos($getWholeUrl, "stockout") == true) {
                                     echo 'active';
                                 } ?>" onclick="window.location='stockout.php'">Stock Out</div>
-                                
-        <div class="nav_option <?php if (strpos($getWholeUrl, "notifications") == true) {
-                                    echo 'active';
-                                } ?>" onclick="window.location='notifications.php'">Notifications</div>
     </div>
 </body>
 

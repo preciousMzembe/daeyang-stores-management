@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/stockout.css">
     <link rel="stylesheet" href="./css/stockin.css">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/items.css">
@@ -15,7 +14,7 @@
     <!-- top -->
     <?php require("./top.php") ?>
 
-    <!-- databse functions for this file --------------------------------------------- -->
+    <!-- database functions for this file --------------------------------------------- -->
     <?php
 
     // get stock out

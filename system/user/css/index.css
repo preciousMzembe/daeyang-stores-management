@@ -186,3 +186,29 @@
 .stock_out_item:hover {
     background-color: rgb(240, 240, 240);
 }
+
+
+/* responsive css */
+@media only screen and (max-width: 750px){
+    .stock_overview_pane {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .items_overview_pane {
+        grid-template-columns: 1fr;
+        padding-bottom: 50px;
+    }
+}
+
+@media only screen and (max-width: 600px){
+    .welcome_pane {
+        flex-direction: column;
+        padding-bottom: 20px;
+    }
+}
+
+@media only screen and (max-width: 450px){
+    .stock_overview_pane {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

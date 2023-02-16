@@ -36,14 +36,17 @@ if (isset($_POST['logout'])) {
         <!-- logo -->
         <div class="logo_pane">
             <img src="../../files//icons/logo.png" alt="">
-            DaeyangStoresMS
+            <p>DaeyangStoresMS</p>
         </div>
 
         <!-- profile -->
         <div class="profile_pane">
             <div class="user_name"><?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?></div>
             <div class="profile_image"><img src="../../files/icons/user2.png" alt=""></div>
-            <div class="drop_down" onclick="show_profile_dropdown()"><img src="../../files/icons/down.png" alt=""></div>
+            <div class="drop_down" onclick="show_profile_dropdown()">
+                <img src="../../files/icons/down.png" alt="" class="drop_image">
+                <img src="../../files/icons/menu.png" alt="" class="drop_down_optional_image">
+            </div>
 
             <!-- dropdown_pane -->
             <div class="dropdown_pane">
@@ -53,10 +56,33 @@ if (isset($_POST['logout'])) {
                     <div class="drop_down_name"><?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?></div>
                 </div>
 
-                <div class="dropdown_option profile_option">
+                <!-- optional view -->
+                <div class="dropdown_option profile_option optional" onclick="window.location='index.php'">
+                    <img src="../../files/icons/dashboard.png" alt="">
+                    Dashboard
+                </div>
+
+                <div class="dropdown_option profile_option optional" onclick="window.location='items.php'">
+                    <img src="../../files/icons/items.png" alt="">
+                    Items
+                </div>
+
+                <div class="dropdown_option profile_option optional" onclick="window.location='stockin.php'">
+                    <img src="../../files/icons/stock2.png" alt="">
+                    Stock In
+                </div>
+
+                <div class="dropdown_option profile_option optional" onclick="window.location='stockout.php'">
+                    <img src="../../files/icons/stock2.png" alt="">
+                    Stock Out
+                </div>
+                <!-- -------------- -->
+
+                <div class="dropdown_option profile_option" onclick="window.location='profile.php'">
                     <img src="../../files/icons/user.png" alt="">
                     Profile
                 </div>
+
                 <div class="dropdown_option logout_option" onclick="logout();">
                     <img src="../../files/icons/logout.png" alt="">
                     Logout

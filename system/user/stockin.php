@@ -14,7 +14,7 @@
     <!-- top -->
     <?php require("./top.php") ?>
 
-    <!-- databse functions for this file --------------------------------------------- -->
+    <!-- database functions for this file --------------------------------------------- -->
     <?php
 
     // get stock in

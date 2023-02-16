@@ -286,6 +286,31 @@ class Database
         }
     }
 
+    // change password
+    function change_password($data){
+        $old_password = $this->clean_input($data['old_password']);
+        $new_password = $this->clean_input($data['new_password']);
+        $confirm_password = $this->clean_input($data['confirm_password']);
+
+        $errors = [];
+
+        if($this->user_details['password'] != $old_password){
+            $errors['old_password'] = "wrong old password entered";
+            return $errors;
+        }
+
+        if($new_password != $confirm_password){
+            $errors['confirm_password'] = "wrong confirmation password entered";
+            return $errors;
+        }
+
+        $sql = "UPDATE `users` SET `password`='$new_password' WHERE `id` = '".$this->user_details['id']."'";
+        if(mysqli_query($this->conn, $sql)){
+            return $errors;
+        }
+
+    }
+
     // logout
     function logout()
     {
