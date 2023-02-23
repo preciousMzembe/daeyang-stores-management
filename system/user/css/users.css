@@ -1,0 +1,68 @@
+.users_top_pane{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 30px;
+}
+
+.user_title{
+    font-size: 20px;
+    color: gray;
+}
+.add_user_button{
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: #8b5a1c;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* users table */
+.users_table_pane{
+    padding: 20px;
+    border-radius: 10px;
+    background-color: whitesmoke;
+}
+
+.users_table_headings{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    color: #8b5a1c;
+    padding-left: 5px;
+}
+
+.users_table_row{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: 10px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.users_table_row:hover{
+    background-color: rgb(240,240,240);
+}
+
+.users_table_row>div{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.user_row_action{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.user_row_action>div{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.user_row_action img{
+    width: 20px;
+}
