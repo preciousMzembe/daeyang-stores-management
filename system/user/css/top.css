@@ -131,9 +131,10 @@ section {
 
 /* body pane */
 .body_pane{
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     gap: 50px;
+    padding-bottom: 50px;
 }
 
 .nav_pane{
@@ -166,6 +167,8 @@ section {
 
     .dropdown_pane .optional{
         display: block;
+        display: flex;
+        align-items: center;
     }
 
     .nav_pane{

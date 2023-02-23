@@ -76,6 +76,11 @@ if (isset($_POST['logout'])) {
                     <img src="../../files/icons/stock2.png" alt="">
                     Stock Out
                 </div>
+
+                <div class="dropdown_option profile_option optional" onclick="window.location='analytics.php'">
+                    <img src="../../files/icons/stock2.png" alt="">
+                    Analytics
+                </div>
                 <!-- -------------- -->
 
                 <div class="dropdown_option profile_option" onclick="window.location='profile.php'">

@@ -49,18 +49,8 @@
 
                 <!-- print report -->
                 <div class="print_report_pane">
-                    <div class="print_report_title">print detaild report</div>
+                    <div class="print_report_title">print report</div>
                     <div class="print_report_form">
-                        <div class="print_report_input">
-                            <!-- start date -->
-                            <div class="start_date">
-                                <input type="text" name="start_date" id="start_date" placeholder="start date">
-                            </div>
-                            <!-- end date -->
-                            <div class="end_date">
-                                <input type="text" name="end_date" id="end_date" placeholder="end date">
-                            </div>
-                        </div>
 
                         <!-- download -->
                         <div class="print_report_button">
@@ -70,25 +60,6 @@
                         <div class="print_report_button">
                             <img src="../../files/icons/mail.png" title="mail">
                         </div>
-
-                        <!-- input script -->
-                        <script>
-                            $(document).ready(function() {
-                                $("#start_date").datepicker({
-                                    showOn: "button",
-                                    buttonImage: "../../files/icons/date.png",
-                                    buttonImageOnly: true,
-                                    buttonText: "Select date"
-                                });
-
-                                $("#end_date").datepicker({
-                                    showOn: "button",
-                                    buttonImage: "../../files/icons/date.png",
-                                    buttonImageOnly: true,
-                                    buttonText: "Select date"
-                                });
-                            })
-                        </script>
                     </div>
                 </div>
             </div>
