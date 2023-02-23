@@ -31,6 +31,14 @@
         <div class="nav_option <?php if (strpos($getWholeUrl, "analytics") == true) {
                                     echo 'active';
                                 } ?>" onclick="window.location='analytics.php'">Analytics</div>
+
+        <!-- users -->
+        <?php
+        if ($database->user_details['position'] != "user") { ?>
+            <div class="nav_option <?php if (strpos($getWholeUrl, "users") == true) {
+                                        echo 'active';
+                                    } ?>" onclick="window.location='users.php'">Users</div>
+        <?php } ?>
     </div>
 </body>
 

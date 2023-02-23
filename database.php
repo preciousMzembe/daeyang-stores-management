@@ -35,13 +35,31 @@ class Database
         $results = mysqli_query($this->conn, $sql);
         $user = mysqli_fetch_assoc($results);
 
+        // check email
         if (empty($user)) {
             $errors['email'] = "wrong email enterd";
             return $errors;
         }
 
+        // check password
         if ($password != $user['password']) {
             $errors['password'] = "wrong password enterd";
+            return $errors;
+        }
+
+        // check user status
+        if($user['status'] == 0){
+            $errors['blocked'] = "your account has beed locked, contact the adminstrator for more information.";
+            return $errors;
+        }
+
+        // check system status
+        $sql = "SELECT * FROM `system` WHERE `id` = '1'";
+        $results = mysqli_query($this->conn, $sql);
+        $system = mysqli_fetch_assoc($results);
+
+        if($system['status'] == 0 && $user['position'] != "developer"){
+            $errors['locked'] = "the system is under maintenance, contact the adminstrator for more information.";
             return $errors;
         }
 

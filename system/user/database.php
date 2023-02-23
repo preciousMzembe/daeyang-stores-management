@@ -1,4 +1,5 @@
 <?php
+ob_start();
 
 class Database
 {
@@ -29,7 +30,7 @@ class Database
             $this->user_id = $_SESSION['user_id'];
         }
 
-        // check user position
+        // get user position
         $sql = "SELECT * FROM `users` WHERE `id` = '$this->user_id'";
         $results = mysqli_query($this->conn, $sql);
         $user = mysqli_fetch_assoc($results);
@@ -39,6 +40,16 @@ class Database
         } else {
             $this->user_details = $user;
         }
+
+        // check system status
+        $sql = "SELECT * FROM `system` WHERE `id` = '1'";
+        $results = mysqli_query($this->conn, $sql);
+        $system = mysqli_fetch_assoc($results);
+
+        if ($system['status'] == 0 && $user['position'] != "developer") {
+            header("location: ../../index.php");
+        }
+
     }
 
     // get current stock
@@ -287,28 +298,28 @@ class Database
     }
 
     // change password
-    function change_password($data){
+    function change_password($data)
+    {
         $old_password = $this->clean_input($data['old_password']);
         $new_password = $this->clean_input($data['new_password']);
         $confirm_password = $this->clean_input($data['confirm_password']);
 
         $errors = [];
 
-        if($this->user_details['password'] != $old_password){
+        if ($this->user_details['password'] != $old_password) {
             $errors['old_password'] = "wrong old password entered";
             return $errors;
         }
 
-        if($new_password != $confirm_password){
+        if ($new_password != $confirm_password) {
             $errors['confirm_password'] = "wrong confirmation password entered";
             return $errors;
         }
 
-        $sql = "UPDATE `users` SET `password`='$new_password' WHERE `id` = '".$this->user_details['id']."'";
-        if(mysqli_query($this->conn, $sql)){
+        $sql = "UPDATE `users` SET `password`='$new_password' WHERE `id` = '" . $this->user_details['id'] . "'";
+        if (mysqli_query($this->conn, $sql)) {
             return $errors;
         }
-
     }
 
     // logout

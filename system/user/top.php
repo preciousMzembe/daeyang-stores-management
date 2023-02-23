@@ -81,6 +81,15 @@ if (isset($_POST['logout'])) {
                     <img src="../../files/icons/stock2.png" alt="">
                     Analytics
                 </div>
+
+                <!-- users -->
+                <?php
+                if ($database->user_details['position'] != "user") { ?>
+                    <div class="dropdown_option profile_option optional" onclick="window.location='users.php'">
+                        <img src="../../files/icons/stock2.png" alt="">
+                        Users
+                    </div>
+                <?php } ?>
                 <!-- -------------- -->
 
                 <div class="dropdown_option profile_option" onclick="window.location='profile.php'">
