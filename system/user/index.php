@@ -120,7 +120,7 @@
                                 <div class="stock_in_item">
                                     <div class=""><?php echo $stock_in['item'] ?></div>
                                     <div class=""><?php echo number_format($stock_in['quantity']) ?></div>
-                                    <div class="">MK <?php echo number_format($stock_in['price_per_unit']) ?></div>
+                                    <div class="">MK <?php echo number_format((float)$stock_in['price_per_unit']) ?></div>
                                     <div class=""><?php echo date("d M Y", strtotime($stock_in['created_at'])) ?></div>
                                 </div>
                             <?php } ?>

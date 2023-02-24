@@ -35,6 +35,9 @@
     // stock in process
     if (isset($_POST['stock_in'])) {
         $errors = $database->stock_in($_POST);
+        if (empty($errors)) {
+            header("location: stockin.php");
+        }
     }
 
     ?>
@@ -149,12 +152,12 @@
                             <div class="item_in_or_out_bottom item_in_or_out_bottom_<?php echo $stock['id'] ?>">
                                 <div class="">
                                     <div class="item_more_details_title">Price per Unit</div>
-                                    <div class="item_more_details_detail">MK <?php echo number_format($stock['price_per_unit']) ?></div>
+                                    <div class="item_more_details_detail">MK <?php (float)$stock['price_per_unit'] ?></div>
                                 </div>
 
                                 <div class="">
                                     <div class="item_more_details_title">Total Amount</div>
-                                    <div class="item_more_details_detail"><span>MK</span> <?php echo number_format($stock['total_amount']) ?></div>
+                                    <div class="item_more_details_detail"><span>MK</span> <?php echo number_format((float)$stock['total_amount']) ?></div>
                                 </div>
 
                                 <div class="">
@@ -292,13 +295,25 @@
     <script src="../../files/js/currency.js"></script>
     <script>
         // hide and how item
-        $(".stock_in_process_pane").hide();
+        // $(".stock_in_process_pane").hide();
         <?php if (!empty($errors)) { ?>
-            $(".stock_in_process_pane").show();
+            $(".item_details_pane").css({
+                "visibility": "visible"
+            });
         <?php } ?>
 
         function show_hide_item() {
-            $(".stock_in_process_pane").toggle();
+            let n = $(".item_details_pane").css("visibility");
+
+            if (n == 'hidden') {
+                $(".item_details_pane").css({
+                    "visibility": "visible"
+                });
+            } else {
+                $(".item_details_pane").css({
+                    "visibility": "hidden"
+                });
+            }
         }
 
 

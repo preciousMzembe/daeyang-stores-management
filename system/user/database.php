@@ -49,7 +49,6 @@ class Database
         if ($system['status'] == 0 && $user['position'] != "developer") {
             header("location: ../../index.php");
         }
-
     }
 
     // get current stock
@@ -319,6 +318,48 @@ class Database
         $sql = "UPDATE `users` SET `password`='$new_password' WHERE `id` = '" . $this->user_details['id'] . "'";
         if (mysqli_query($this->conn, $sql)) {
             return $errors;
+        }
+    }
+
+    // add user
+    function add_user($data)
+    {
+        $fname = $this->clean_input($data['fname']);
+        $lname = $this->clean_input($data['lname']);
+        $position = $this->clean_input($data['position']);
+        $email = $this->clean_input($data['email']);
+        $password = $this->clean_input($data['password']);
+
+        // check email
+        $errors = [];
+        $sql = "SELECT `email` FROM `users` WHERE `email` = '$email'";
+        $results = mysqli_query($this->conn, $sql);
+        $email_results = mysqli_fetch_assoc($results);
+
+        if (!empty($email_results)) {
+            $errors['email'] = "there is an account with the same email";
+            return $errors;
+        }
+
+        $sql = "INSERT INTO `users`(`email`, `password`, `fname`, `lname`, `position`) 
+                            VALUES ('$email','$password','$fname','$lname','$position')";
+        mysqli_query($this->conn, $sql);
+    }
+
+    // get users
+    function get_users($active = true){
+        if($active){
+            // get all active users
+            $sql = "SELECT `fname`, `lname`, `position`, `status` FROM `users` WHERE `status` = '1' AND `position` != 'developer'";
+            $results = mysqli_query($this->conn, $sql);
+            $users = mysqli_fetch_all($results, MYSQLI_ASSOC);
+            return $users;
+        }else{
+            // get all locked users
+            $sql = "SELECT `fname`, `lname`, `position`, `status` FROM `users` WHERE `status` = '0' AND `position` != 'developer'";
+            $results = mysqli_query($this->conn, $sql);
+            $users = mysqli_fetch_all($results, MYSQLI_ASSOC);
+            return $users;
         }
     }
 

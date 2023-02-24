@@ -214,14 +214,6 @@
 
                 <!-- details table moving part-->
                 <div class="item_stock_in_and_out_table">
-                    <!-- headings -->
-                    <!-- <div class="item_stock_in_and_out_headings">
-                        <div>Date</div>
-                        <div>In</div>
-                        <div>Out</div>
-                        <div>Balance</div>
-                        <div></div>
-                    </div> -->
 
                     <div class="item_stock_details_rows">
                         <?php
@@ -258,12 +250,12 @@
                                         <!-- stock in information -->
                                         <div class="">
                                             <div class="item_more_details_title">Price / Unit</div>
-                                            <div class="item_more_details_detail"><span>MK</span> <?php echo number_format($stock['price_per_unit']) ?></div>
+                                            <div class="item_more_details_detail"><span>MK</span> <?php echo number_format((float)$stock['price_per_unit']) ?></div>
                                         </div>
 
                                         <div class="">
                                             <div class="item_more_details_title">Total Amount</div>
-                                            <div class="item_more_details_detail"><span>MK</span> <?php echo number_format($stock['total_amount']) ?></div>
+                                            <div class="item_more_details_detail"><span>MK</span> <?php echo number_format((float)$stock['total_amount']) ?></div>
                                         </div>
 
                                         <div class="">
@@ -331,14 +323,14 @@
 
     <script>
         // hide and how item
-        $(".item_details_pane").hide();
+        // $(".item_details_pane").hide();
 
         <?php if (!empty($item_details)) { ?>
-            $(".item_details_pane").show();
+            $(".item_details_pane").css({"visibility":"visible"});
         <?php } ?>
 
         function show_hide_item() {
-            $(".item_details_pane").toggle();
+            $(".item_details_pane").css({"visibility":"hidden"});
         }
 
         // hide and show stock more details

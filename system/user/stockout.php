@@ -35,6 +35,9 @@
     // stock in process
     if (isset($_POST['stock_out'])) {
         $errors = $database->stock_out($_POST);
+        if (empty($errors)) {
+            header("location: stockout.php");
+        }
     }
 
     ?>
@@ -261,13 +264,25 @@
 
     <script>
         // hide and how item
-        $(".stock_in_process_pane").hide();
+        // $(".stock_in_process_pane").hide();
         <?php if (!empty($errors)) { ?>
-            $(".stock_in_process_pane").show();
+            $(".item_details_pane").css({
+                "visibility": "visible"
+            });
         <?php } ?>
 
         function show_hide_item() {
-            $(".stock_in_process_pane").toggle();
+            let n = $(".item_details_pane").css("visibility");
+
+            if (n == 'hidden') {
+                $(".item_details_pane").css({
+                    "visibility": "visible"
+                });
+            } else {
+                $(".item_details_pane").css({
+                    "visibility": "hidden"
+                });
+            }
         }
 
         // hide and how item more details
