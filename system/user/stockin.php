@@ -152,7 +152,7 @@
                             <div class="item_in_or_out_bottom item_in_or_out_bottom_<?php echo $stock['id'] ?>">
                                 <div class="">
                                     <div class="item_more_details_title">Price per Unit</div>
-                                    <div class="item_more_details_detail">MK <?php (float)$stock['price_per_unit'] ?></div>
+                                    <div class="item_more_details_detail">MK <?php echo number_format((float)$stock['price_per_unit']) ?></div>
                                 </div>
 
                                 <div class="">
@@ -255,10 +255,10 @@
                         <div><input type="text" data-type="currency" name="price_per_unit" id="currency-field" value="<?php echo $_POST['price_per_unit'] ?? "" ?>"></div>
                     </div>
 
-                    <div class="">
+                    <!-- <div class="">
                         <div class="input_label">Total Amount</div>
                         <div><input type="text" data-type="currency" name="total_amount" id="" value="<?php echo $_POST['total_amount'] ?? "" ?>"></div>
-                    </div>
+                    </div> -->
 
                     <div class="">
                         <div class="input_label">Remarks</div>

@@ -30,7 +30,7 @@ class Database
             $this->user_id = $_SESSION['user_id'];
         }
 
-        // get user position
+        // get user details
         $sql = "SELECT * FROM `users` WHERE `id` = '$this->user_id'";
         $results = mysqli_query($this->conn, $sql);
         $user = mysqli_fetch_assoc($results);
@@ -39,6 +39,11 @@ class Database
             header("location: ../../index.php");
         } else {
             $this->user_details = $user;
+        }
+
+        // check user status
+        if ($user['status'] == "0") {
+            $this->logout();
         }
 
         // check system status
@@ -200,8 +205,9 @@ class Database
         $price_per_unit = $this->clean_input($data['price_per_unit']);
         $price_per_unit = preg_replace("/[^0-9.]/", "", $price_per_unit);
 
-        $total_amount = $this->clean_input($data['total_amount']);
-        $total_amount = preg_replace("/[^0-9.]/", "", $total_amount);
+        $total_amount = (float)$price_per_unit * (int)$quantity;
+        // $total_amount = $this->clean_input($data['total_amount']);
+        // $total_amount = preg_replace("/[^0-9.]/", "", $total_amount);
 
         $remarks = $this->clean_input($data['remarks']);
         $deliverd_by = $this->clean_input($data['deliverd_by']);
@@ -347,20 +353,103 @@ class Database
     }
 
     // get users
-    function get_users($active = true){
-        if($active){
+    function get_users($active = true)
+    {
+        if ($active) {
             // get all active users
-            $sql = "SELECT `fname`, `lname`, `position`, `status` FROM `users` WHERE `status` = '1' AND `position` != 'developer'";
+            $sql = "SELECT `id`, `fname`, `lname`, `position`, `status` FROM `users` WHERE `status` = '1' AND `id` != '" . $this->user_details['id'] . "' AND `position` != 'developer'";
             $results = mysqli_query($this->conn, $sql);
             $users = mysqli_fetch_all($results, MYSQLI_ASSOC);
             return $users;
-        }else{
+        } else {
             // get all locked users
-            $sql = "SELECT `fname`, `lname`, `position`, `status` FROM `users` WHERE `status` = '0' AND `position` != 'developer'";
+            $sql = "SELECT `id`, `fname`, `lname`, `position`, `status` FROM `users` WHERE `status` = '0' AND `id` != '" . $this->user_details['id'] . "' AND `position` != 'developer'";
             $results = mysqli_query($this->conn, $sql);
             $users = mysqli_fetch_all($results, MYSQLI_ASSOC);
             return $users;
         }
+    }
+
+    // lock user
+    function lock_user($id)
+    {
+        $sql = "UPDATE `users` SET `status`='0' WHERE `id` = '$id'";
+        mysqli_query($this->conn, $sql);
+        return true;
+    }
+
+    // unlock user
+    function unlock_user($id)
+    {
+        $sql = "UPDATE `users` SET `status`='1' WHERE `id` = '$id'";
+        mysqli_query($this->conn, $sql);
+        return true;
+    }
+
+    // delete user
+    function delete_user($id)
+    {
+        $sql = "DELETE FROM `users` WHERE `id` = '$id'";
+        mysqli_query($this->conn, $sql);
+        return true;
+    }
+
+    // get analytics 
+    function get_analytics($year)
+    {
+        $analystics = [];
+
+        // get yearly updates
+        $sql = "SELECT `total_amount`, `created_at` FROM `stock_in` WHERE YEAR(`created_at`) = '$year' ";
+        $results = mysqli_query($this->conn, $sql);
+        $details = mysqli_fetch_all($results, MYSQLI_ASSOC);
+
+        $yearly = [
+            "01" => 0,
+            "02" => 0,
+            "03" => 0,
+            "04" => 0,
+            "05" => 0,
+            "06" => 0,
+            "07" => 0,
+            "08" => 0,
+            "09" => 0,
+            "10" => 0,
+            "11" => 0,
+            "12" => 0,
+        ];
+
+        foreach ($details as $detail) {
+            $month =  date("m", strtotime($detail['created_at']));
+            (float)$yearly[$month] += (float)$detail['total_amount'];
+        }
+
+        $analystics['yearly'] = $yearly;
+
+        // get years in database
+        $sql = "SELECT DISTINCT YEAR(`created_at`) AS 'year' FROM `stock_in` ORDER BY `created_at` DESC";
+        $results = mysqli_query($this->conn, $sql);
+        $years = mysqli_fetch_all($results, MYSQLI_ASSOC);
+
+        $analystics['years'] = $years;
+
+        // get years comparisone
+        $comparisone_years =  [];
+        foreach($years as $year){
+            $comparisone_years[$year['year']] = 0;
+        }
+
+        $sql = "SELECT `total_amount`, YEAR(`created_at`) AS 'year' FROM `stock_in`";
+        $results = mysqli_query($this->conn, $sql);
+        $years_comparisones = mysqli_fetch_all($results, MYSQLI_ASSOC);
+        foreach($years_comparisones as $i){
+            (float)$comparisone_years[$i['year']] += (float)$i['total_amount'];
+        }
+
+        $analystics['comparisone_years'] = $comparisone_years;
+        
+
+        return $analystics;
     }
 
     // logout

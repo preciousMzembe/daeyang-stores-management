@@ -14,7 +14,14 @@
 
     <!-- databse functions for this file --------------------------------------------- -->
     <?php
-
+    $Year = date("Y");
+    if (isset($_POST['year'])) {
+        $Year = $_POST['year'];
+    }
+    // get analytics
+    $analytics = $database->get_analytics($Year);
+    $yearly = $analytics['yearly'];
+    $comparisone_years = $analytics['comparisone_years'];
     ?>
 
     <!-- ---------------------------------------------------------------------------- -->
@@ -33,27 +40,31 @@
                 <!-- year choice -->
                 <div class="year_choice_input">
                     <select name="year" id="year">
-                        <option value="2023">2023</option>
+                        <?php foreach ($analytics['years'] as $year) { ?>
+                            <option value="<?php echo $year['year'] ?>" <?php if ($Year == $year['year']) {
+                                                                            echo "selected";
+                                                                        } ?> onclick="change_year('<?php echo $year['year'] ?>')">
+                                <?php echo $year['year'] ?>
+                            </option>
+                        <?php } ?>
                     </select>
                     <!-- Year -->
                 </div>
             </div>
 
-            <!-- chat -->
+            <!-- yearly items value -->
             <div class="year_chat">
                 <canvas id="year_chat"></canvas>
             </div>
             <div class="yearly_total_stock_value">
-                Total Stock Value: <span>MK 200,000</span>
+                Total Stock Value: <span class="total_stock_value">MK</span>
             </div>
 
-            <!-- yearly items value -->
+            <!-- years comparison -->
             <div class="yearly_title">Comprehensive View Across All Years</div>
             <div class="year_chat">
                 <canvas id="years_chat"></canvas>
             </div>
-
-            <!-- years comparison -->
         </div>
     </section>
 
@@ -61,6 +72,18 @@
     <script>
         // year chat
         const year = document.getElementById('year_chat');
+        const yearly_values = [
+            <?php
+            $total_stock = 0;
+            foreach ($yearly as $key => $value) {
+                (float)$total_stock += (float)$value;
+                echo $value . ",";
+            }
+            ?>
+        ];
+
+        const total_stock = '<?php echo "MK " . number_format($total_stock) ?>'
+        $(".total_stock_value").text(total_stock)
 
         new Chart(year, {
             type: 'bar',
@@ -69,8 +92,8 @@
                     "July", "August", "September", "October", "November", "December"
                 ],
                 datasets: [{
-                    label: '2023 stock details',
-                    data: [12, 19, 3, 5, 2, 3, 5, 8, 12, 19, 20, 13],
+                    label: '<?php echo $Year ?> stock details',
+                    data: yearly_values,
                     backgroundColor: [
                         'rgba(224, 157, 1)'
                     ],
@@ -88,21 +111,37 @@
 
         // all years
         const years = document.getElementById('years_chat');
+        let years_labels = [
+            <?php
+            foreach ($comparisone_years as $key => $value) {
+                echo $key . ",";
+            }
+            ?>
+        ];
+        let years_values = [
+            <?php
+            foreach ($comparisone_years as $key => $value) {
+                echo $value . ",";
+            }
+            ?>
+        ];
+        years_labels.reverse()
+        years_values.reverse()
 
         new Chart(years, {
             type: 'scatter',
             data: {
-                labels: ["2018", "2019", "2020", "2021", "2022", "2023"],
+                labels: years_labels,
                 datasets: [{
                     type: 'line',
                     label: 'Value',
-                    data: [10, 20, 30, 40, 30, 50],
+                    data: years_values,
                     fill: false,
                     borderColor: 'rgb(139, 90, 28)'
                 }, {
                     type: 'bar',
                     label: 'Year Data',
-                    data: [10, 20, 30, 40, 30, 50],
+                    data: years_values,
                     backgroundColor: 'rgba(224, 157, 1)'
                 }]
             },
@@ -116,9 +155,28 @@
                     legend: {
                         display: false
                     }
-                }
+                },
             }
         });
+
+        // change year
+        function change_year(year) {
+            let url = window.location.href;
+
+            const form = document.createElement('form');
+            form.method = "post";
+            form.action = url;
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = "year";
+            hiddenField.value = year;
+
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
     </script>
 </body>
 

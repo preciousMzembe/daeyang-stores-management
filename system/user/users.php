@@ -29,6 +29,30 @@
         }
     }
 
+    // lock user
+    if (isset($_POST['lock'])) {
+        $lock = $database->lock_user($_POST['lock']);
+        if ($lock) {
+            header("location: users.php");
+        }
+    }
+
+    // unlock user
+    if (isset($_POST['unlock'])) {
+        $unlock = $database->unlock_user($_POST['unlock']);
+        if ($unlock) {
+            header("location: users.php");
+        }
+    }
+
+    // delete user
+    if (isset($_POST['delete'])) {
+        $delete = $database->delete_user($_POST['delete']);
+        if ($delete) {
+            header("location: users.php");
+        }
+    }
+
     // get active and locked users
     $active_users = $database->get_users();
     $locked_users = $database->get_users($active = false);
@@ -61,12 +85,12 @@
                     </div>
                     <?php foreach ($active_users as $user) { ?>
                         <div class="users_table_row">
-                            <div><?php echo $user['fname'] . " " . $user['lname'] ?></div>
+                            <div id="user_<?php echo $user['id'] ?>"><?php echo $user['fname'] . " " . $user['lname'] ?></div>
                             <div><?php echo $user['position'] ?></div>
                             <div class="user_row_action">
-                                <div><img src="../../files/icons/edit_user.png" alt="" title="edit"></div>
-                                <div><img src="../../files/icons/lock_user.png" alt="" title="lock"></div>
-                                <div><img src="../../files/icons/delete_user.png" alt="" title="delete"></div>
+                                <!-- <div><img src="../../files/icons/edit_user.png" alt="" title="edit"></div> -->
+                                <div onclick="show_confirmation('<?php echo $user['id'] ?>', 'are you sure you want to lock user?', 'lock')"><img src="../../files/icons/lock_user.png" alt="" title="lock"></div>
+                                <div onclick="show_confirmation('<?php echo $user['id'] ?>', 'are you sure you want to delete user?', 'delete')"><img src="../../files/icons/delete_user.png" alt="" title="delete"></div>
                             </div>
                         </div>
                     <?php } ?>
@@ -92,11 +116,11 @@
                     </div>
                     <?php foreach ($locked_users as $user) { ?>
                         <div class="users_table_row">
-                            <div><?php echo $user['fname'] . " " . $user['lname'] ?></div>
+                            <div id="user_<?php echo $user['id'] ?>"><?php echo $user['fname'] . " " . $user['lname'] ?></div>
                             <div><?php echo $user['position'] ?></div>
                             <div class="user_row_action">
-                                <div><img src="../../files/icons/lock_user.png" alt="" title="unlock"></div>
-                                <div><img src="../../files/icons/delete_user.png" alt="" title="delete"></div>
+                                <div onclick="show_confirmation('<?php echo $user['id'] ?>', 'are you sure you want to unlock user?', 'unlock')"><img src="../../files/icons/lock_user.png" alt="" title="unlock"></div>
+                                <div onclick="show_confirmation('<?php echo $user['id'] ?>', 'are you sure you want to delete user?', 'delete')"><img src="../../files/icons/delete_user.png" alt="" title="delete"></div>
                             </div>
                         </div>
                     <?php } ?>
@@ -175,6 +199,22 @@
         </div>
     </section>
 
+    <!-- confirmation popup -->
+    <section class="edit_user_pane">
+        <div class="edit_user_in_pane">
+            <!-- close -->
+            <div class="edit_user_close">
+                <div onclick="close_confirmation()"><img src="../../files/icons/close.png" alt=""></div>
+            </div>
+            <div class="edit_user_message">message</div>
+            <div class="edit_user_name">username</div>
+            <div class="edit_user_buttons">
+                <div class="edit_user_ok_button">Ok</div>
+                <div class="edit_user_close_button" onclick="close_confirmation()">Close</div>
+            </div>
+        </div>
+    </section>
+
     <script>
         // hide and how item
         // $(".item_details_pane").hide();
@@ -197,6 +237,86 @@
                     "visibility": "hidden"
                 });
             }
+        }
+
+        // edit user buttons
+        function show_confirmation(id, message, action) {
+            $(".edit_user_message").text(message)
+            $(".edit_user_name").text($("#user_" + id).text())
+
+            $(".edit_user_pane").css({
+                "visibility": "visible"
+            });
+
+            if (action == "lock") {
+                $(".edit_user_ok_button").attr("onclick", `lock_user('${id}')`)
+            }
+            if (action == "delete") {
+                $(".edit_user_ok_button").attr("onclick", `delete_user('${id}')`)
+            }
+            if (action == "unlock") {
+                $(".edit_user_ok_button").attr("onclick", `unlock_user('${id}')`)
+            }
+        }
+
+        function close_confirmation() {
+            $(".edit_user_pane").css({
+                "visibility": "hidden"
+            });
+        }
+
+        function lock_user(id) {
+            let url = window.location.href;
+
+            const form = document.createElement('form');
+            form.method = "post";
+            form.action = url;
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = "lock";
+            hiddenField.value = id;
+
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function delete_user(id) {
+            let url = window.location.href;
+
+            const form = document.createElement('form');
+            form.method = "post";
+            form.action = url;
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = "delete";
+            hiddenField.value = id;
+
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function unlock_user(id) {
+            let url = window.location.href;
+
+            const form = document.createElement('form');
+            form.method = "post";
+            form.action = url;
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = "unlock";
+            hiddenField.value = id;
+
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 </body>
