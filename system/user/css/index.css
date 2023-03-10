@@ -148,6 +148,7 @@
 
 /* stock in-out table */
 .stock_in_out_table {
+    width: 100%;
     padding: 20px;
     border-radius: 10px;
     background-color: whitesmoke;

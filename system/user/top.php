@@ -21,7 +21,7 @@ if (isset($_POST['logout'])) {
     <link rel="icon" type="image/png" href="../../files/icons/logo.png" />
     <link rel="stylesheet" href="./css/top.css">
     <link href="../../files/js/jquery-ui.css" rel="Stylesheet" type="text/css" />
-    <title>DSMS</title>
+    <title>DYUNISMS</title>
 </head>
 
 <body>
@@ -36,7 +36,7 @@ if (isset($_POST['logout'])) {
         <!-- logo -->
         <div class="logo_pane">
             <img src="../../files//icons/logo.png" alt="">
-            <p>DaeyangStoresMS</p>
+            <p>DYUNI StoresMS</p>
         </div>
 
         <!-- profile -->
@@ -88,6 +88,15 @@ if (isset($_POST['logout'])) {
                     <div class="dropdown_option profile_option optional" onclick="window.location='users.php'">
                         <img src="../../files/icons/users.png" alt="">
                         Users
+                    </div>
+                <?php } ?>
+
+                <!-- system -->
+                <?php
+                if ($database->user_details['position'] == "developer") { ?>
+                    <div class="dropdown_option profile_option optional" onclick="window.location='system.php'">
+                        <img src="../../files/icons/code.png" alt="">
+                        System
                     </div>
                 <?php } ?>
                 <!-- -------------- -->

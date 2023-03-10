@@ -24,6 +24,12 @@ if (isset($_POST['login'])) {
 </head>
 
 <body>
+    <!-- 
+    Daeyang Stores Management System.
+    Auther:    Precious Mzembe.
+    ID Number: BScICT/19/054.
+ -->
+
     <section class="wrapper">
         <div class="wrapper_in">
             <!-- image -->

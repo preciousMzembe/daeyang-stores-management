@@ -1,0 +1,54 @@
+.system_settings_title {
+    font-size: 20px;
+    color: gray;
+    padding-bottom: 20px;
+}
+
+.lock_system {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 30px;
+}
+
+.lock_system_button {
+    width: 150px;
+    height: 40px;
+    color: white;
+    background-color: #e09d00;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.system_users {
+    padding-top: 30px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    color: gray;
+}
+
+.system_users_table {
+    padding: 20px;
+    background-color: whitesmoke;
+    border-radius: 10px;
+}
+
+.system_users_table_titles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    color: #8b5a1c;
+}
+
+.system_users_table_user {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    color: gray;
+    padding-top: 20px;
+}
+
+.system_users_table_user .name {
+    text-transform: capitalize;
+}

@@ -39,6 +39,14 @@
                                         echo 'active';
                                     } ?>" onclick="window.location='users.php'">Users</div>
         <?php } ?>
+
+        <!-- system -->
+        <?php
+        if ($database->user_details['position'] == "developer") { ?>
+            <div class="nav_option <?php if (strpos($getWholeUrl, "system.php") == true) {
+                                        echo 'active';
+                                    } ?>" onclick="window.location='system.php'">System</div>
+        <?php } ?>
     </div>
 </body>
 

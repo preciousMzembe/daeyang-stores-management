@@ -35,6 +35,35 @@
         $item_stock_in_and_out = $database->get_item_stock_in_and_out($item_name);
     }
 
+    // edit item
+    if (isset($_POST['edit_item'])) {
+        $item_name = $_POST['edit_item'];
+        $edit_item_details = $database->get_item_information($item_name);
+    }
+
+    if (isset($_POST['new_item_name'])) {
+        $edit_errors = $database->change_item_name($_POST);
+        if (empty($edit_errors)) {
+            header('location: items.php');
+        } else {
+            $edit_item_details = $database->get_item_information($_POST['item_name']);
+        }
+    }
+
+    if (isset($_POST['reorder_level'])) {
+        $change = $database->change_reorder_level($_POST);
+        if ($change) {
+            header('location: items.php');
+        }
+    }
+
+    if(isset($_POST['merge_items'])){
+        $merge = $database->merge_items($_POST);
+        if($merge){
+            header('location: items.php');
+        }
+    }
+
     ?>
 
     <!-- ---------------------------------------------------------------------------- -->
@@ -86,8 +115,9 @@
                     <div class="items_headings">
                         <div>Item</div>
                         <div>Quantity</div>
+                        <div>Reorder Level</div>
                         <div>Last Stock In</div>
-                        <div>Last Stock Out</div>
+                        <!-- <div>Last Stock Out</div> -->
                         <div></div>
                     </div>
 
@@ -95,11 +125,13 @@
                     <?php foreach ($items as $item) { ?>
                         <div class="items_item">
                             <div><?php echo $item['name'] ?></div>
-                            <div><?php echo number_format($item['balance']) ?></div>
+                            <div><?php echo number_format((float)$item['balance']) ?></div>
+                            <div><?php echo number_format((float)$item['reorder_level']) ?></div>
                             <div><?php echo date("d M Y", strtotime($item['stock_in_date'])) ?></div>
-                            <div><?php echo date("d M Y", strtotime($item['stock_out_date']) ?? "") ?></div>
-                            <div>
-                                <div class="view_item_button" onclick="get_item('<?php echo $item['name'] ?>')">view more</div>
+                            <!-- <div><?php echo date("d M Y", strtotime($item['stock_out_date']) ?? "") ?></div> -->
+                            <div class="view_item_buttons">
+                                <div class="view_item_button" onclick="get_item('<?php echo $item['name'] ?>')">view</div>
+                                <div class="view_item_button edit_item_button" onclick="edit_item('<?php echo $item['name'] ?>')">edit</div>
                             </div>
                         </div>
                     <?php } ?>
@@ -196,6 +228,12 @@
                         <div class="item_stock_value">
                             <div class="item_current_stock_head">Stock Value</div>
                             <div class="item_current_stock_number"><span>MK</span> <?php echo number_format((int)$item_details['balance'] * (float)$item_details['price_per_unit']) ?> </div>
+                        </div>
+
+                        <!-- reorder level -->
+                        <div class="item_current_stock_pane">
+                            <div class="item_current_stock_head">Reorder Level</div>
+                            <div class="item_current_stock_number"><?php echo $item_details['reorder_level'] ?> <span>units</span></div>
                         </div>
                     </div>
 
@@ -321,16 +359,57 @@
         <?php } ?>
     </section>
 
+    <!-- edit item pane -->
+    <section class="edit_item_pane">
+        <?php if (!empty($edit_item_details)) { ?>
+            <div class="edit_item_pane_in">
+                <!-- close -->
+                <div class="edit_item_close">
+                    <div class="edit_item_name"><?php echo $edit_item_details['name'] ?></div>
+                    <div class="edit_item_close_button" onclick="show_edit_item()"><img src="../../files/icons/close.png" alt=""></div>
+                </div>
+
+                <div class="edit_item_title">Edit Details</div>
+
+                <form action="items.php" method="POST" class="edit_item_name_form">
+                    <input type="hidden" name="item_name" value="<?php echo $edit_item_details['name'] ?>">
+                    <div><label for="">new name</label></div>
+                    <div><input type="text" name="new_item_name" value="<?php echo $_POST['new_item_name'] ?? "" ?>" required></div>
+                    <div class="edit_error">
+                        <div class="error_pane"><?php echo $edit_errors['message'] ?? "" ?></div>
+                    </div>
+                    <?php if (!empty($edit_errors['merge'])) { ?>
+                        <div class="merge_pane">
+                            <p>merge items as <span><?php echo $_POST['new_item_name'] ?? "" ?></span></p>
+                            <div class="merge_button" onclick="merge_items('<?php echo $_POST['item_name'] ?>', '<?php echo $_POST['new_item_name'] ?>')">merge</div>
+                        </div>
+                    <?php } ?>
+                    <div><button type="submit">Change</button></div>
+                </form>
+
+                <form action="items.php" method="POST" class="edit_item_reorder_form">
+                    <input type="hidden" name="item_name" value="<?php echo $edit_item_details['name'] ?>">
+                    <div><label for="">reorder levels</label></div>
+                    <div><input type="number" name="reorder_level" id="" min="0" value="<?php echo $edit_item_details['reorder_level'] ?>"></div>
+                    <div><button type="submit">Change</button></div>
+                </form>
+
+            </div>
+        <?php } ?>
+    </section>
+
     <script>
         // hide and how item
-        // $(".item_details_pane").hide();
-
         <?php if (!empty($item_details)) { ?>
-            $(".item_details_pane").css({"visibility":"visible"});
+            $(".item_details_pane").css({
+                "visibility": "visible"
+            });
         <?php } ?>
 
         function show_hide_item() {
-            $(".item_details_pane").css({"visibility":"hidden"});
+            $(".item_details_pane").css({
+                "visibility": "hidden"
+            });
         }
 
         // hide and show stock more details
@@ -357,6 +436,67 @@
             hiddenField.value = item;
 
             form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // show and hide edit item
+        <?php if (!empty($edit_item_details) || !empty($edit_errors)) { ?>
+            $(".edit_item_pane").css({
+                "visibility": "visible"
+            });
+        <?php } ?>
+
+        function show_edit_item() {
+            $(".edit_item_pane").css({
+                "visibility": "hidden"
+            });
+        }
+
+        function edit_item(item) {
+            let url = window.location.href;
+
+            const form = document.createElement('form');
+            form.method = "post";
+            form.action = url;
+
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = "edit_item";
+            hiddenField.value = item;
+
+            form.appendChild(hiddenField);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function merge_items(old_item, new_item) {
+            let url = window.location.href;
+
+            const form = document.createElement('form');
+            form.method = "post";
+            form.action = url;
+
+            const old_item_input = document.createElement('input');
+            old_item_input.type = 'hidden';
+            old_item_input.name = "old_item";
+            old_item_input.value = old_item;
+
+            const new_item_input = document.createElement('input');
+            new_item_input.type = 'hidden';
+            new_item_input.name = "new_item";
+            new_item_input.value = new_item;
+
+            const merge_items_input = document.createElement('input');
+            merge_items_input.type = 'hidden';
+            merge_items_input.name = "merge_items";
+            merge_items_input.value = "merge";
+
+            form.appendChild(old_item_input);
+            form.appendChild(new_item_input);
+            form.appendChild(merge_items_input);
 
             document.body.appendChild(form);
             form.submit();

@@ -6,6 +6,7 @@ class Database
     private $conn;
     private $user_id;
     public $user_details;
+    public $system_status;
 
     public function __construct()
     {
@@ -50,8 +51,9 @@ class Database
         $sql = "SELECT * FROM `system` WHERE `id` = '1'";
         $results = mysqli_query($this->conn, $sql);
         $system = mysqli_fetch_assoc($results);
+        $this->system_status = $system['status'];
 
-        if ($system['status'] == 0 && $user['position'] != "developer") {
+        if ($this->system_status == 0 && $user['position'] != "developer") {
             header("location: ../../index.php");
         }
     }
@@ -128,6 +130,119 @@ class Database
         $results = mysqli_query($this->conn, $sql);
         $item = mysqli_fetch_assoc($results);
         return $item;
+    }
+
+    // change item name
+    function change_item_name($data)
+    {
+        $errors = [];
+        $old_name = $this->clean_input($data['item_name']);
+        $new_name = $this->clean_input($data['new_item_name']);
+
+        if ($old_name == $new_name) {
+            $errors['message'] = "old name and new name are just the same";
+            return $errors;
+        }
+
+        $sql = "SELECT `name` FROM `items` WHERE `name` = '$new_name'";
+        $results = mysqli_query($this->conn, $sql);
+        $item = mysqli_fetch_assoc($results);
+
+        if (!empty($item)) {
+            $errors['message'] = "there is already an item with the same name";
+            $errors['merge'] = true;
+            return $errors;
+        }
+
+        // update items
+        $sql = "UPDATE `items` SET `name`='$new_name' WHERE `name` = '$old_name'";
+        if (mysqli_query($this->conn, $sql)) {
+            // update stock in
+            $sql = "UPDATE `stock_in` SET `item`='$new_name' WHERE `item` = '$old_name'";
+            if (mysqli_query($this->conn, $sql)) {
+                // update stock out
+                $sql = "UPDATE `stock_out` SET `item`='$new_name' WHERE `item` = '$old_name'";
+                mysqli_query($this->conn, $sql);
+            }
+        }
+    }
+
+    // merge items
+    function merge_items($data)
+    {
+        $old_item = $this->clean_input($_POST['old_item']);
+        $new_item = $this->clean_input($_POST['new_item']);
+
+        // get details of old item
+        $sql = "SELECT `balance`, `price_per_unit` FROM `items` WHERE `name` = '$old_item'";
+        $results = mysqli_query($this->conn, $sql);
+        $old_item_details = mysqli_fetch_assoc($results);
+
+        // get details of new item
+        $sql = "SELECT `balance`, `price_per_unit` FROM `items` WHERE `name` = '$new_item'";
+        $results = mysqli_query($this->conn, $sql);
+        $new_item_details = mysqli_fetch_assoc($results);
+
+        // merge
+        $new_balance = (int)$old_item_details['balance'] + (int)$new_item_details['balance'];
+        if ((float)$old_item_details['price_per_unit'] > (float)$new_item_details['price_per_unit']) {
+            $new_price_per_unit = (float)$old_item_details['price_per_unit'];
+        } else {
+            $new_price_per_unit = (float)$new_item_details['price_per_unit'];
+        }
+
+        // new item details
+        $sql = "UPDATE `items` SET `balance`='$new_balance',`price_per_unit`='$new_price_per_unit' WHERE `name` = '$new_item'";
+        if (mysqli_query($this->conn, $sql)) {
+            // delete old item
+            $sql = "DELETE FROM `items` WHERE `name` = '$old_item'";
+            if (mysqli_query($this->conn, $sql)) {
+                // change old item stock in and out details
+                $sql = "UPDATE `stock_in` SET `item`='$new_item' WHERE `item` = '$old_item'";
+                if (mysqli_query($this->conn, $sql)) {
+                    $sql = "UPDATE `stock_out` SET `item`='$new_item' WHERE `item` = '$old_item'";
+                    mysqli_query($this->conn, $sql);
+                }
+
+                // calculate in and out
+                $sql = "SELECT DISTINCT * 
+                    FROM (
+                        (SELECT `id`, `item`, `quantity`, `in_balance`, NULL AS `out_balance`, `created_at` FROM `stock_in` WHERE `item` = 'pc' ORDER BY `created_at`)
+                        UNION ALL
+                        (SELECT `id`, `item`, `quantity`, NULL AS `in_balance`, `out_balance`, `created_at` FROM `stock_out` WHERE `item` = 'pc' ORDER BY `created_at`)
+                    ) t ORDER BY `created_at`";
+                $results = mysqli_query($this->conn, $sql);
+                $in_out_details = mysqli_fetch_all($results, MYSQLI_ASSOC);
+
+                $balance = 0;
+                foreach ($in_out_details as $detail) {
+                    if ($detail['in_balance'] != null) {
+                        // stock in
+                        $balance += (int)$detail['quantity'];
+                        $sql = "UPDATE `stock_in` SET `in_balance`='$balance' WHERE `id` = '" . $detail['id'] . "'";
+                        mysqli_query($this->conn, $sql);
+                    } else {
+                        // stock out
+                        $balance -= (int)$detail['quantity'];
+                        $sql = "UPDATE `stock_out` SET `out_balance`='$balance' WHERE `id` = '" . $detail['id'] . "'";
+                        mysqli_query($this->conn, $sql);
+                    }
+                }
+                
+                return true;
+            }
+        }
+    }
+
+    // change reorder level
+    function change_reorder_level($data)
+    {
+        $item = $this->clean_input($data['item_name']);
+        $level = $this->clean_input($data['reorder_level']);
+
+        $sql = "UPDATE `items` SET `reorder_level`='$level' WHERE `name` = '$item'";
+        mysqli_query($this->conn, $sql);
+        return true;
     }
 
     // get item stock in and out
@@ -357,7 +472,7 @@ class Database
     {
         if ($active) {
             // get all active users
-            $sql = "SELECT `id`, `fname`, `lname`, `position`, `status` FROM `users` WHERE `status` = '1' AND `id` != '" . $this->user_details['id'] . "' AND `position` != 'developer'";
+            $sql = "SELECT `id`, `fname`, `lname`, `email`, `password`,  `position`, `status` FROM `users` WHERE `status` = '1' AND `id` != '" . $this->user_details['id'] . "' AND `position` != 'developer'";
             $results = mysqli_query($this->conn, $sql);
             $users = mysqli_fetch_all($results, MYSQLI_ASSOC);
             return $users;
@@ -435,19 +550,19 @@ class Database
 
         // get years comparisone
         $comparisone_years =  [];
-        foreach($years as $year){
+        foreach ($years as $year) {
             $comparisone_years[$year['year']] = 0;
         }
 
         $sql = "SELECT `total_amount`, YEAR(`created_at`) AS 'year' FROM `stock_in`";
         $results = mysqli_query($this->conn, $sql);
         $years_comparisones = mysqli_fetch_all($results, MYSQLI_ASSOC);
-        foreach($years_comparisones as $i){
+        foreach ($years_comparisones as $i) {
             (float)$comparisone_years[$i['year']] += (float)$i['total_amount'];
         }
 
         $analystics['comparisone_years'] = $comparisone_years;
-        
+
 
         return $analystics;
     }
@@ -457,6 +572,20 @@ class Database
     {
         $_SESSION['user_id'] = "";
         header("Refresh:0");
+    }
+
+    // lock system
+    function lock_system($lock = true)
+    {
+        if ($lock) {
+            $sql = "UPDATE `system` SET `status`='0' WHERE `id` = '1'";
+            mysqli_query($this->conn, $sql);
+            return true;
+        } else {
+            $sql = "UPDATE `system` SET `status`='1' WHERE `id` = '1'";
+            mysqli_query($this->conn, $sql);
+            return true;
+        }
     }
 
     // function to clean input data before saving to database

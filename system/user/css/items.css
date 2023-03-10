@@ -130,9 +130,16 @@
     background-color: rgb(240, 240, 240);
 }
 
+.view_item_buttons{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
 .view_item_button {
     height: 100%;
-    width: 100%;
+    width: 50%;
     background-color: #e09d00;
     color: white;
     text-align: center;
@@ -142,6 +149,9 @@
     text-transform: none;
     cursor: pointer;
     border-radius: 5px;
+}
+.edit_item_button{
+    background-color: #8b5a1c;
 }
 
 .not_found_pane{
@@ -220,6 +230,7 @@
 .item_details_name {
     text-transform: capitalize;
     font-size: 20px;
+    color: #e09d00;
 }
 
 /* stock and value */
@@ -343,6 +354,109 @@
 }
 .item_in_out_print_button img{
     width: 20px;
+}
+
+/* edit item */
+.edit_item_pane{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.405);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+}
+
+.edit_item_pane_in{
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: white;
+}
+.edit_item_close{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding-bottom: 20px;
+}
+.edit_item_close .edit_item_close_button{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.edit_item_close img{
+    width: 20px;
+}
+
+.edit_item_name{
+    font-size: 20px;
+    color: #e09d00;
+    text-transform: capitalize;
+}
+
+.edit_item_title{
+    padding-bottom: 20px;
+}
+
+.edit_item_pane_in label{
+    display: inline-block;
+    padding-bottom: 10px;
+    color: gray;
+}
+.edit_item_pane_in input{
+    width: 100%;
+    height: 40px;
+    background-color: whitesmoke;
+    border: 1px solid rgb(230, 230, 230);
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    outline: none;
+}
+.edit_item_pane_in button{
+    width: 100%;
+    height: 40px;
+    background-color: #e09d00;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+.edit_item_name_form{
+    padding-bottom: 30px;
+}
+
+.edit_error{
+    padding-bottom: 10px;
+}
+
+.merge_pane{
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 15px;
+}
+.merge_pane span{
+    color: #e09d00;
+}
+.merge_pane .merge_button{
+    width: 150px;
+    height: 30px;
+    color: white;
+    border-radius: 5px;
+    background-color: #8b5a1c;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 

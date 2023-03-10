@@ -141,7 +141,7 @@
                     <div class="stock_in_out_title">recent stock out</div>
 
                     <!-- stock out table -->
-                    <div class="stock_in_out_table stovk_out_table">
+                    <div class="stock_in_out_table stock_out_table">
                         <!-- check if there recent stok out to show -->
                         <?php if (!empty($recent_stock_out)) { ?>
                             <!-- headings -->

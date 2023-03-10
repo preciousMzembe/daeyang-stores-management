@@ -148,6 +148,8 @@ section {
 }
 
 
+
+
 /* responsive css */
 @media only screen and (max-width: 1000px){
     section {
@@ -173,6 +175,12 @@ section {
 
     .nav_pane{
         display: none;
+    }
+}
+
+@media only screen and (max-width: 500px){
+    section {
+        padding: 0px 20px;
     }
 }
 
