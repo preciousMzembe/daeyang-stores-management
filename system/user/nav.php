@@ -28,6 +28,10 @@
                                     echo 'active';
                                 } ?>" onclick="window.location='stockout.php'">Stock Out</div>
 
+<div class="nav_option <?php if (strpos($getWholeUrl, "reports") == true) {
+                                    echo 'active';
+                                } ?>" onclick="window.location='reports.php'">Reports</div>
+
         <div class="nav_option <?php if (strpos($getWholeUrl, "analytics") == true) {
                                     echo 'active';
                                 } ?>" onclick="window.location='analytics.php'">Analytics</div>

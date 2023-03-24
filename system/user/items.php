@@ -57,9 +57,9 @@
         }
     }
 
-    if(isset($_POST['merge_items'])){
+    if (isset($_POST['merge_items'])) {
         $merge = $database->merge_items($_POST);
-        if($merge){
+        if ($merge) {
             header('location: items.php');
         }
     }
@@ -77,7 +77,7 @@
         <div class="details_pane">
             <!-- items top -->
             <div class="items_top_pane">
-                Items In Stock : <span>20</span>
+                Items In Stock : <span><?php echo count($items) ?></span>
             </div>
 
             <!-- search and print report -->
@@ -91,19 +91,17 @@
                 </form>
 
                 <!-- print report -->
-                <div class="print_report_pane">
+                <!-- <div class="print_report_pane">
                     <div>print report</div>
                     <div class="print_report_options">
-                        <!-- download -->
                         <div class="print_report_button">
                             <img src="../../files/icons/download.png" title="download">
                         </div>
-                        <!-- mail -->
                         <div class="print_report_button">
                             <img src="../../files/icons/mail.png" title="mail">
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- items list -->
@@ -165,30 +163,25 @@
                         <div class="item_details_name"><?php echo $item_details['name'] ?></div>
 
                         <!-- print report -->
-                        <div class="print_report_pane">
+                        <!-- <div class="print_report_pane">
                             <div class="print_report_title">print detaild report</div>
                             <div class="print_report_form">
                                 <div class="print_report_input">
-                                    <!-- start date -->
                                     <div class="start_date">
                                         <input type="text" name="start_date" id="start_date" placeholder="start date">
                                     </div>
-                                    <!-- end date -->
                                     <div class="end_date">
                                         <input type="text" name="end_date" id="end_date" placeholder="end date">
                                     </div>
                                 </div>
 
-                                <!-- download -->
                                 <div class="print_report_button">
                                     <img src="../../files/icons/download.png" title="download">
                                 </div>
-                                <!-- mail -->
                                 <div class="print_report_button">
                                     <img src="../../files/icons/mail.png" title="mail">
                                 </div>
 
-                                <!-- input script -->
                                 <script>
                                     $(document).ready(function() {
                                         $("#start_date").datepicker({
@@ -207,7 +200,7 @@
                                     })
                                 </script>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
 
                     <!-- item current stock and value -->
@@ -371,21 +364,23 @@
 
                 <div class="edit_item_title">Edit Details</div>
 
-                <form action="items.php" method="POST" class="edit_item_name_form">
-                    <input type="hidden" name="item_name" value="<?php echo $edit_item_details['name'] ?>">
-                    <div><label for="">new name</label></div>
-                    <div><input type="text" name="new_item_name" value="<?php echo $_POST['new_item_name'] ?? "" ?>" required></div>
-                    <div class="edit_error">
-                        <div class="error_pane"><?php echo $edit_errors['message'] ?? "" ?></div>
-                    </div>
-                    <?php if (!empty($edit_errors['merge'])) { ?>
-                        <div class="merge_pane">
-                            <p>merge items as <span><?php echo $_POST['new_item_name'] ?? "" ?></span></p>
-                            <div class="merge_button" onclick="merge_items('<?php echo $_POST['item_name'] ?>', '<?php echo $_POST['new_item_name'] ?>')">merge</div>
+                <?php if (($database->user_details['position'] != "admin")) { ?>
+                    <form action="items.php" method="POST" class="edit_item_name_form">
+                        <input type="hidden" name="item_name" value="<?php echo $edit_item_details['name'] ?>">
+                        <div><label for="">new name</label></div>
+                        <div><input type="text" name="new_item_name" value="<?php echo $_POST['new_item_name'] ?? "" ?>" required></div>
+                        <div class="edit_error">
+                            <div class="error_pane"><?php echo $edit_errors['message'] ?? "" ?></div>
                         </div>
-                    <?php } ?>
-                    <div><button type="submit">Change</button></div>
-                </form>
+                        <?php if (!empty($edit_errors['merge'])) { ?>
+                            <div class="merge_pane">
+                                <p>merge items as <span><?php echo $_POST['new_item_name'] ?? "" ?></span></p>
+                                <div class="merge_button" onclick="merge_items('<?php echo $_POST['item_name'] ?>', '<?php echo $_POST['new_item_name'] ?>')">merge</div>
+                            </div>
+                        <?php } ?>
+                        <div><button type="submit">Change</button></div>
+                    </form>
+                <?php } ?>
 
                 <form action="items.php" method="POST" class="edit_item_reorder_form">
                     <input type="hidden" name="item_name" value="<?php echo $edit_item_details['name'] ?>">

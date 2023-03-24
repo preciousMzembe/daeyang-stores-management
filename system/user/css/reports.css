@@ -1,0 +1,97 @@
+.reports_selection_pane{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgb(230,230,230);
+}
+.reports_selection_pane>div>div:first-child{
+    font-size: 14px;
+    color: gray;
+    padding-bottom: 5px;
+}
+
+.reports_selection_pane input{
+    border: none;
+    background-color: transparent;
+    outline: none;
+}
+
+.reports_selection_pane select{
+    width: 150px;
+    height: 30px;
+    background-color: whitesmoke;
+    border: 1px solid rgb(230,230,230);
+    border-radius: 5px;
+    padding: 5px;
+}
+.retorts_get_button button{
+    height: 30px;
+    width: 100px;
+    border: none;
+    color: white;
+    background-color: #e09d00;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* items balance */
+.items_balance_titles{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    color: #8b5a1c;
+    padding: 0px 5px;
+}
+.items_balance_item{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 10px;
+    padding: 10px 5px;
+    background-color: ghostwhite;
+    font-size: 14px;
+    text-transform: capitalize;
+}
+.items_balance_total{
+    padding-top: 20px;
+    color: #8b5a1c;
+}
+.items_balance_total span{
+    color: #e09d00;
+}
+.items_balance_print{
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgb(230,230,230);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.items_balance_print div{
+    width: 150px;
+    height: 40px;
+    background-color: #e09d00;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* stock ins */
+.stock_in_report_titles{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    color: #8b5a1c;
+    padding: 0px 5px;
+}
+.stock_in_report_item{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin-top: 10px;
+    padding: 10px 5px;
+    background-color: ghostwhite;
+    font-size: 14px;
+    text-transform: capitalize;
+}

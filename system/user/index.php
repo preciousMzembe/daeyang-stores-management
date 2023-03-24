@@ -25,6 +25,9 @@
     // get total items
     $total_items = $database->get_total_items();
 
+    // get items below reorder levels
+    $items_below = $database->get_items_below_reorder_levels();
+
     // get recent stock in
     $recent_stock_in = $database->get_stock_in("all", 5);
 
@@ -48,20 +51,17 @@
                 <div class="welcome_pane_user">Welcome <span><?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?></span></div>
 
                 <!-- print report -->
-                <div class="print_report_pane">
+                <!-- <div class="print_report_pane">
                     <div class="print_report_title">print report</div>
                     <div class="print_report_form">
-
-                        <!-- download -->
                         <div class="print_report_button">
                             <img src="../../files/icons/download.png" title="download">
                         </div>
-                        <!-- mail -->
                         <div class="print_report_button">
                             <img src="../../files/icons/mail.png" title="mail">
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <!-- check overview -->
@@ -94,6 +94,35 @@
                         <div class="stock_name">Total Items</div>
                         <div class="stock_number"><?php echo number_format($total_items) ?></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- items below reorder levels -->
+            <div class="items_below_reorder_pane">
+                <div class="stock_in_out_title">items below reorder levels</div>
+                <div class="items_below_reorder_table">
+                    <?php if (!empty($items_below)) { ?>
+                        <div class="items_below_titles">
+                            <div>Item</div>
+                            <div>Balance</div>
+                            <div>Reorder Level</div>
+                        </div>
+
+                        <?php foreach ($items_below as $key => $item) { ?>
+                            <div class="items_below_item">
+                                <div><?php echo $key ?></div>
+                                <div><?php echo number_format($item['balance']) ?></div>
+                                <div><?php echo number_format($item['reorder_level']) ?></div>
+                            </div>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <div class="not_found_pane">
+                            <div class="not_found_text">no items below reorder levels</div>
+                            <div class="not_found_image">
+                                <img src="../../files/icons/not_found.png" alt="">
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
 

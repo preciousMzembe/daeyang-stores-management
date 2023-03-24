@@ -77,6 +77,11 @@ if (isset($_POST['logout'])) {
                     Stock Out
                 </div>
 
+                <div class="dropdown_option profile_option optional" onclick="window.location='reports.php'">
+                    <img src="../../files/icons/stock2.png" alt="">
+                    Reports
+                </div>
+
                 <div class="dropdown_option profile_option optional" onclick="window.location='analytics.php'">
                     <img src="../../files/icons/stock2.png" alt="">
                     Analytics
@@ -118,6 +123,7 @@ if (isset($_POST['logout'])) {
     <script type="text/javascript" src="../../files/js/jquery-ui.js"></script>
     <script>
         function show_profile_dropdown() {
+            $(".drop_image").toggleClass("rotate_class");
             $(".dropdown_pane").toggle(500);
         }
 

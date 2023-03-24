@@ -67,6 +67,9 @@ section {
 .profile_pane .drop_down img {
     width: 30px;
 }
+.rotate_class{
+    rotate: 180deg;
+}
 
 .dropdown_pane {
     display: none;

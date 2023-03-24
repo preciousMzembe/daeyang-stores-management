@@ -123,6 +123,23 @@ class Database
         return $items;
     }
 
+    // get items below reorder levels
+    function get_items_below_reorder_levels()
+    {
+        $sql = "SELECT `name`, `balance`, `reorder_level` FROM `items`";
+        $results = mysqli_query($this->conn, $sql);
+        $all_items = mysqli_fetch_all($results, MYSQLI_ASSOC);
+
+        $items = [];
+        foreach ($all_items as $item) {
+            if ($item['balance'] <= $item['reorder_level']) {
+                $items[$item['name']]['balance'] = $item['balance'];
+                $items[$item['name']]['reorder_level'] = $item['reorder_level'];
+            }
+        }
+        return $items;
+    }
+
     // get item information
     function get_item_information($name)
     {
@@ -228,7 +245,7 @@ class Database
                         mysqli_query($this->conn, $sql);
                     }
                 }
-                
+
                 return true;
             }
         }
@@ -417,26 +434,40 @@ class Database
         }
     }
 
-    // change password
-    function change_password($data)
-    {
-        $old_password = $this->clean_input($data['old_password']);
-        $new_password = $this->clean_input($data['new_password']);
-        $confirm_password = $this->clean_input($data['confirm_password']);
+    // change email
+    function change_email($data){
+        $email = $this->clean_input($data['email']);
 
         $errors = [];
 
-        if ($this->user_details['password'] != $old_password) {
-            $errors['old_password'] = "wrong old password entered";
+        $sql = "SELECT `email` FROM `users` WHERE `email` = '$email'";
+        $results = mysqli_query($this->conn, $sql);
+        $user = mysqli_fetch_assoc($results);
+
+        if(!empty($user)){
+            $errors['error'] = "email is already used for another account";
             return $errors;
         }
 
-        if ($new_password != $confirm_password) {
-            $errors['confirm_password'] = "wrong confirmation password entered";
+        $sql = "UPDATE `users` SET `email`='$email' WHERE `id` = '" . $this->user_details['id'] . "'";
+        if (mysqli_query($this->conn, $sql)) {
+            return $errors;
+        }
+    }
+
+    // change password
+    function change_password($data)
+    {
+        $password = $this->clean_input($data['password']);
+
+        $errors = [];
+
+        if (strlen($password) < 6) {
+            $errors['error'] = "password should not be less than 6 characters";
             return $errors;
         }
 
-        $sql = "UPDATE `users` SET `password`='$new_password' WHERE `id` = '" . $this->user_details['id'] . "'";
+        $sql = "UPDATE `users` SET `password`='$password' WHERE `id` = '" . $this->user_details['id'] . "'";
         if (mysqli_query($this->conn, $sql)) {
             return $errors;
         }
@@ -507,6 +538,124 @@ class Database
         $sql = "DELETE FROM `users` WHERE `id` = '$id'";
         mysqli_query($this->conn, $sql);
         return true;
+    }
+
+    // get balance reorts
+    function get_balance_reports($data)
+    {
+        $item = $this->clean_input($_POST['item']);
+        $type = $this->clean_input($_POST['type']);
+        $start_date = $this->clean_input($_POST['start_date']);
+        $end_date = $this->clean_input($_POST['end_date']);
+
+        if ($item != "all") {
+            $sql = "SELECT `name`, `balance` FROM `items` WHERE `name` = '$item'";
+        } else {
+            $sql = "SELECT `name`, `balance` FROM `items`";
+        }
+        $results = mysqli_query($this->conn, $sql);
+        $balances = mysqli_fetch_all($results, MYSQLI_ASSOC);
+        return $balances;
+    }
+
+    // get stock in reports
+    function get_stock_in_reports($data)
+    {
+        $item = $this->clean_input($_POST['item']);
+        $type = $this->clean_input($_POST['type']);
+        $start_date = $this->clean_input($_POST['start_date']);
+        $end_date = $this->clean_input($_POST['end_date']);
+
+        if (empty($start_date) && empty($end_date)) {
+            // empty dates
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `item` = '$item' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` ORDER BY `created_at` DESC";
+            }
+        } elseif (!empty($start_date) && !empty($end_date)) {
+            // all dates available
+            $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `item` = '$item' AND `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            }
+        } elseif (!empty($start_date) && empty($end_date)) {
+            // start date
+            $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
+
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `item` = '$item' AND `created_at` >= '$start_date' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `created_at` >= '$start_date' ORDER BY `created_at` DESC";
+            }
+        } elseif (empty($start_date) && !empty($end_date)) {
+            // end date
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `item` = '$item' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            }
+        }
+
+        $results = mysqli_query($this->conn, $sql);
+        $stock_ins = mysqli_fetch_all($results, MYSQLI_ASSOC);
+        return $stock_ins;
+    }
+
+    // get stock out reports
+    function get_stock_out_reports($data)
+    {
+        $item = $this->clean_input($_POST['item']);
+        $type = $this->clean_input($_POST['type']);
+        $start_date = $this->clean_input($_POST['start_date']);
+        $end_date = $this->clean_input($_POST['end_date']);
+
+        if (empty($start_date) && empty($end_date)) {
+            // empty dates
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$item' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` ORDER BY `created_at` DESC";
+            }
+        } elseif (!empty($start_date) && !empty($end_date)) {
+            // all dates available
+            $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$item' AND `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            }
+        } elseif (!empty($start_date) && empty($end_date)) {
+            // start date
+            $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
+
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$item' AND `created_at` >= '$start_date' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `created_at` >= '$start_date' ORDER BY `created_at` DESC";
+            }
+        } elseif (empty($start_date) && !empty($end_date)) {
+            // end date
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+
+            if ($item != "all") {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$item' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            } else {
+                $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `created_at` <= '$end_date' ORDER BY `created_at` DESC";
+            }
+        }
+
+        $results = mysqli_query($this->conn, $sql);
+        $stock_ins = mysqli_fetch_all($results, MYSQLI_ASSOC);
+        return $stock_ins;
     }
 
     // get analytics 
