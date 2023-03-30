@@ -121,6 +121,8 @@ if (isset($_POST['logout'])) {
 
     <script src="../../files/js/jquery-3.6.3.min.js"></script>
     <script type="text/javascript" src="../../files/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="../../files/js/jspdf.min.js"></script>
+    <script type="text/javascript" src="../../files/js/html2canvas.min.js"></script>
     <script>
         function show_profile_dropdown() {
             $(".drop_image").toggleClass("rotate_class");

@@ -435,7 +435,8 @@ class Database
     }
 
     // change email
-    function change_email($data){
+    function change_email($data)
+    {
         $email = $this->clean_input($data['email']);
 
         $errors = [];
@@ -444,7 +445,7 @@ class Database
         $results = mysqli_query($this->conn, $sql);
         $user = mysqli_fetch_assoc($results);
 
-        if(!empty($user)){
+        if (!empty($user)) {
             $errors['error'] = "email is already used for another account";
             return $errors;
         }
@@ -540,6 +541,59 @@ class Database
         return true;
     }
 
+    // get item all reports
+    function get_item_stock_in_and_out_reports($data)
+    {
+        $name = $this->clean_input($_POST['item']);
+        $type = $this->clean_input($_POST['type']);
+        $start_date = $this->clean_input($_POST['start_date']);
+        $end_date = $this->clean_input($_POST['end_date']);
+
+        if (empty($start_date) && empty($end_date)) {
+            // empty dates
+            $sql = "SELECT DISTINCT * 
+            FROM (
+                (SELECT `id`, `item`, `quantity`, `price_per_unit`, `total_amount`, `supplier`, `deliverd_by`, `checked_by`, `issued_by`, `remarks`, `in_balance`, NULL AS `out_balance`, NULL AS `purpose`, NUll AS `requested_by`, NULL AS `distributed_by`, `created_at` FROM `stock_in` WHERE `item` = '$name' ORDER BY `created_at`)
+                UNION ALL
+                (SELECT `id`, `item`, `quantity`, NULL AS `price_per_unit`, NULL AS `total_amount`, NULL AS `supplier`, NULL AS `deliverd_by`, `checked_by`, NULL AS `issued_by`, NULL AS `remarks`, NULL AS `in_balance`, `out_balance`, `purpose`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$name' ORDER BY `created_at`)
+            ) t ORDER BY `created_at` DESC";
+        } elseif (!empty($start_date) && !empty($end_date)) {
+            // all dates available
+            $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']) . ' + 1 days'));
+
+            $sql = "SELECT DISTINCT * 
+            FROM (
+                (SELECT `id`, `item`, `quantity`, `price_per_unit`, `total_amount`, `supplier`, `deliverd_by`, `checked_by`, `issued_by`, `remarks`, `in_balance`, NULL AS `out_balance`, NULL AS `purpose`, NUll AS `requested_by`, NULL AS `distributed_by`, `created_at` FROM `stock_in` WHERE `item` = '$name' AND `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at`)
+                UNION ALL
+                (SELECT `id`, `item`, `quantity`, NULL AS `price_per_unit`, NULL AS `total_amount`, NULL AS `supplier`, NULL AS `deliverd_by`, `checked_by`, NULL AS `issued_by`, NULL AS `remarks`, NULL AS `in_balance`, `out_balance`, `purpose`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$name' AND `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at`)
+            ) t ORDER BY `created_at` DESC";
+        } elseif (!empty($start_date) && empty($end_date)) {
+            // start date
+            $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
+
+            $sql = "SELECT DISTINCT * 
+            FROM (
+                (SELECT `id`, `item`, `quantity`, `price_per_unit`, `total_amount`, `supplier`, `deliverd_by`, `checked_by`, `issued_by`, `remarks`, `in_balance`, NULL AS `out_balance`, NULL AS `purpose`, NUll AS `requested_by`, NULL AS `distributed_by`, `created_at` FROM `stock_in` WHERE `item` = '$name' AND `created_at` >= '$start_date' ORDER BY `created_at`)
+                UNION ALL
+                (SELECT `id`, `item`, `quantity`, NULL AS `price_per_unit`, NULL AS `total_amount`, NULL AS `supplier`, NULL AS `deliverd_by`, `checked_by`, NULL AS `issued_by`, NULL AS `remarks`, NULL AS `in_balance`, `out_balance`, `purpose`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$name' AND `created_at` >= '$start_date' ORDER BY `created_at`)
+            ) t ORDER BY `created_at` DESC";
+        } elseif (empty($start_date) && !empty($end_date)) {
+            // end date
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']) . ' + 1 days'));
+
+            $sql = "SELECT DISTINCT * 
+            FROM (
+                (SELECT `id`, `item`, `quantity`, `price_per_unit`, `total_amount`, `supplier`, `deliverd_by`, `checked_by`, `issued_by`, `remarks`, `in_balance`, NULL AS `out_balance`, NULL AS `purpose`, NUll AS `requested_by`, NULL AS `distributed_by`, `created_at` FROM `stock_in` WHERE `item` = '$name' AND `created_at` <= '$end_date' ORDER BY `created_at`)
+                UNION ALL
+                (SELECT `id`, `item`, `quantity`, NULL AS `price_per_unit`, NULL AS `total_amount`, NULL AS `supplier`, NULL AS `deliverd_by`, `checked_by`, NULL AS `issued_by`, NULL AS `remarks`, NULL AS `in_balance`, `out_balance`, `purpose`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$name' AND `created_at` <= '$end_date' ORDER BY `created_at`)
+            ) t ORDER BY `created_at` DESC";
+        }
+        $results = mysqli_query($this->conn, $sql);
+        $details = mysqli_fetch_all($results, MYSQLI_ASSOC);
+        return $details;
+    }
+
     // get balance reorts
     function get_balance_reports($data)
     {
@@ -576,7 +630,7 @@ class Database
         } elseif (!empty($start_date) && !empty($end_date)) {
             // all dates available
             $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
-            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']) . ' + 1 days'));
 
             if ($item != "all") {
                 $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `item` = '$item' AND `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
@@ -594,7 +648,7 @@ class Database
             }
         } elseif (empty($start_date) && !empty($end_date)) {
             // end date
-            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']) . ' + 1 days'));
 
             if ($item != "all") {
                 $sql = "SELECT `item`, `quantity`, `price_per_unit`, `checked_by`, `created_at` FROM `stock_in` WHERE `item` = '$item' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
@@ -626,7 +680,7 @@ class Database
         } elseif (!empty($start_date) && !empty($end_date)) {
             // all dates available
             $start_date = date("Y-m-d", strtotime($this->clean_input($_POST['start_date'])));
-            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']) . ' + 1 days'));
 
             if ($item != "all") {
                 $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$item' AND `created_at` >= '$start_date' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";
@@ -644,7 +698,7 @@ class Database
             }
         } elseif (empty($start_date) && !empty($end_date)) {
             // end date
-            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']).' + 1 days'));
+            $end_date = date("Y-m-d", strtotime($this->clean_input($_POST['end_date']) . ' + 1 days'));
 
             if ($item != "all") {
                 $sql = "SELECT `item`, `quantity`, `requested_by`, `distributed_by`, `created_at` FROM `stock_out` WHERE `item` = '$item' AND `created_at` <= '$end_date' ORDER BY `created_at` DESC";

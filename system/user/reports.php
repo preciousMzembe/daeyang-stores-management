@@ -23,16 +23,24 @@
     // get reports
     if (isset($_POST['get_report'])) {
         if ($_POST['type'] == "all") {
-            echo "all";
+            if ($_POST['item'] != "all") {
+                $item_all = $database->get_item_stock_in_and_out_reports($_POST);
+            } else {
+                echo "all";
+            }
         } elseif ($_POST['type'] == "balance") {
             $balances = $database->get_balance_reports($_POST);
             $_SESSION['report_array'] = $balances;
+            $_SESSION['item'] = $_POST['item'];
+            $_SESSION['report_type'] = "balances";
         } elseif ($_POST['type'] == "stock_in") {
             $stock_ins = $database->get_stock_in_reports($_POST);
             $_SESSION['report_array'] = $stock_ins;
+            $_SESSION['report_type'] = "stock_in";
         } elseif ($_POST['type'] == "stock_out") {
             $stock_outs = $database->get_stock_out_reports($_POST);
             $_SESSION['report_array'] = $stock_outs;
+            $_SESSION['report_type'] = "stock_out";
         }
     }
 
@@ -141,6 +149,110 @@
                 </div>
             </form>
 
+            <!-- all item details reports -->
+            <?php if (isset($item_all)) { ?>
+                <div class="item_all_details">
+                    <?php if (!empty($item_all)) { ?>
+                        <!-- titles -->
+                        <div class="all_details_titles">
+                            <div>Date</div>
+                            <div>In</div>
+                            <div>Out</div>
+                            <div>Balance</div>
+                        </div>
+
+                        <!-- in_out_details -->
+                        <?php foreach ($item_all as $stock) { ?>
+                            <div class="in_out_details">
+                                <div class=""><?php echo date("d M Y", strtotime($stock['created_at'])) ?></div>
+                                <div class=""><?php if ($stock['in_balance'] != null) {
+                                                    echo number_format($stock['quantity']);
+                                                } ?></div>
+                                <div class=""><?php if ($stock['out_balance'] != null) {
+                                                    echo number_format($stock['quantity']);
+                                                } ?></div>
+                                <div class=""><?php if ($stock['in_balance'] != null) {
+                                                    echo number_format($stock['in_balance']);
+                                                } else {
+                                                    echo number_format($stock['out_balance']);
+                                                } ?></div>
+
+                                <?php if ($stock['in_balance'] != null) { ?>
+                                    <!-- stock in information -->
+                                    <div class="">
+                                        <div class="item_more_details_title">Price / Unit</div>
+                                        <div class="item_more_details_detail"><span>MK</span> <?php echo number_format((float)$stock['price_per_unit']) ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Total Amount</div>
+                                        <div class="item_more_details_detail"><span>MK</span> <?php echo number_format((float)$stock['total_amount']) ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Supplier</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['supplier'] ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Deliverd By</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['deliverd_by'] ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Checked By</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['checked_by'] ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Issued By</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['issued_by'] ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Remarks</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['remarks'] ?></div>
+                                    </div>
+                                <?php } else { ?>
+                                    <!-- stock out information -->
+                                    <div class="">
+                                        <div class="item_more_details_title">Purpose</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['purpose'] ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Requested By</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['requested_by'] ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Checked By</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['checked_by'] ?></div>
+                                    </div>
+
+                                    <div class="">
+                                        <div class="item_more_details_title">Distributed By</div>
+                                        <div class="item_more_details_detail"><?php echo $stock['distributed_by'] ?></div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
+
+                        <!-- print report -->
+                        <div class="items_balance_print">
+                            <div onclick="download_report()">Download Report</div>
+                        </div>
+                    <?php } else { ?>
+                        <div class="not_found_pane">
+                            <div class="not_found_text">no records found to show</div>
+                            <div class="not_found_image">
+                                <img src="../../files/icons/not_found.png" alt="">
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+
             <!-- balances reports -->
             <?php if (isset($balances)) { ?>
                 <div class="items_balance">
@@ -166,7 +278,7 @@
 
                         <!-- print report -->
                         <div class="items_balance_print">
-                            <div onclick="download()">Download Report</div>
+                            <div onclick="download_report()">Download Report</div>
                         </div>
                     <?php } else { ?>
                         <div class="not_found_pane">
@@ -270,29 +382,9 @@
         </div>
     </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         function download_report() {
-            let url = window.location.href;
-
-            const form = document.createElement('form');
-            form.method = "post";
-            form.action = "test.php";
-
-            const hiddenField = document.createElement('input');
-            hiddenField.type = 'hidden';
-            hiddenField.name = "print_report";
-            hiddenField.value = "print";
-
-            form.appendChild(hiddenField);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
-
-        function download(){
-            let div = document.querySelector(".items_balance");
-            html2pdf().from(div).save();
+            document.location = "pdf.php";
         }
     </script>
 </body>

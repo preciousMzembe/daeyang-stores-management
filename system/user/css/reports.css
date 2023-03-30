@@ -36,7 +36,28 @@
     border-radius: 5px;
 }
 
+/* item all details */
+.all_details_titles{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    color: #8b5a1c;
+    padding: 0px 5px;
+}
+.in_out_details{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: 10px;
+    padding: 10px 5px;
+    background-color: ghostwhite;
+    font-size: 14px;
+    text-transform: capitalize;
+    row-gap: 10px;
+}
+
 /* items balance */
+.items_balance{
+    width: 100%;
+}
 .items_balance_titles{
     display: grid;
     grid-template-columns: 1fr 1fr;

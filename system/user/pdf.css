@@ -1,0 +1,43 @@
+*{
+    font-family: sans-serif;
+}
+.main_heading {
+    text-align: center;
+    font-size: 20px;
+    color: #8b5a1c;
+}
+
+.sub_heading {
+    text-align: center;
+    color: #e09d00;
+    padding-top: 10px;
+}
+
+table {
+    width: 100%;
+    padding-top: 20px;
+    border-spacing: 0px 10px;
+}
+
+th,
+td {
+    width: 50%;
+    text-align: left;
+    padding: 5px;
+}
+.titles{
+    color: #8b5a1c;
+}
+.item{
+    background-color: ghostwhite;
+    text-transform: capitalize;
+    padding: 5px;
+}
+
+.values{
+    color: #8b5a1c;
+    padding-top: 10px;
+}
+.values span{
+    color: #e09d00;
+}
