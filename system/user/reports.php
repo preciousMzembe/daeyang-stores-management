@@ -37,10 +37,14 @@
             $stock_ins = $database->get_stock_in_reports($_POST);
             $_SESSION['report_array'] = $stock_ins;
             $_SESSION['report_type'] = "stock_in";
+            $_SESSION['start_date'] = $_POST['start_date'];
+            $_SESSION['end_date'] = $_POST['end_date'];
         } elseif ($_POST['type'] == "stock_out") {
             $stock_outs = $database->get_stock_out_reports($_POST);
             $_SESSION['report_array'] = $stock_outs;
             $_SESSION['report_type'] = "stock_out";
+            $_SESSION['start_date'] = $_POST['start_date'];
+            $_SESSION['end_date'] = $_POST['end_date'];
         }
     }
 

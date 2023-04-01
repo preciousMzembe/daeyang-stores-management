@@ -12,6 +12,21 @@
     color: #e09d00;
     padding-top: 10px;
 }
+.dates{
+    text-align: center;
+    padding-top: 10px;
+    font-size: 12px;
+}
+.dates div{
+    display: inline-block;
+    color: #8b5a1c;
+}
+.dates span{
+    color: #e09d00;
+}
+.to{
+    padding-left: 10px;
+}
 
 table {
     width: 100%;
