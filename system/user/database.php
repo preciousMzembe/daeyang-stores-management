@@ -108,7 +108,7 @@ class Database
     function get_items($name = "all", $names = false)
     {
         if ($names) {
-            $sql = "SELECT `name` FROM `items`";
+            $sql = "SELECT `name` FROM `items` ORDER BY `name`";
         } else {
             $sql = "SELECT * FROM `items`";
         }

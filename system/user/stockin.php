@@ -30,7 +30,7 @@
     }
 
     // get items list
-    $items = $database->get_items(true);
+    $items = $database->get_items($name = "all", $names = true);
 
     // stock in process
     if (isset($_POST['stock_in'])) {

@@ -25,6 +25,11 @@
         if ($_POST['type'] == "all") {
             if ($_POST['item'] != "all") {
                 $item_all = $database->get_item_stock_in_and_out_reports($_POST);
+                $_SESSION['report_array'] = $item_all;
+                $_SESSION['item'] = $_POST['item'];
+                $_SESSION['report_type'] = "all";
+                $_SESSION['start_date'] = $_POST['start_date'];
+                $_SESSION['end_date'] = $_POST['end_date'];
             } else {
                 echo "all";
             }

@@ -11,8 +11,166 @@ if (isset($_SESSION['report_array'])) {
 
     // css and headings
     $html = '<style>' . file_get_contents('./pdf.css') . '</style>';
+    if ($_SESSION['report_type'] == "all") {
+        // all
+        $html .= '
+                <div class="main_heading">DYUNI Stores Management</div>
+                <div class="sub_heading">' . $_SESSION['item'] . ' Detaild Report</div>
+            ';
 
-    if ($_SESSION['report_type'] == "balances") {
+        if ($_SESSION['start_date'] != "" && $_SESSION['end_date'] != "") {
+            $html .= '
+                    <div class="dates">
+                        <div>From: <span>' . date("d M Y", strtotime($_SESSION['start_date'])) . '</span></div>
+                        <div class="to">To: <span>' . date("d M Y", strtotime($_SESSION['end_date'])) . '</span></div>
+                    </div>
+                ';
+        }
+
+        if ($_SESSION['start_date'] == "" && $_SESSION['end_date'] != "") {
+            $html .= '
+                    <div class="dates">
+                        <div>From: <span>-- -- --</span></div>
+                        <div class="to">To: <span>' . date("d M Y", strtotime($_SESSION['end_date'])) . '</span></div>
+                    </div>
+                ';
+        }
+
+        if ($_SESSION['start_date'] != "" && $_SESSION['end_date'] == "") {
+            $html .= '
+                    <div class="dates">
+                        <div>From: <span>' . date("d M Y", strtotime($_SESSION['start_date'])) . '</span></div>
+                        <div class="to">To: <span>-- -- --</span></div>
+                    </div>
+                ';
+        }
+
+        $html .= '
+            <table>
+                <tr class="titles">
+                    <th>Date</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>Balance</th>
+                </tr>
+            ';
+
+        foreach ($report_array as $stock) {
+            if ($stock['in_balance'] != null) {
+                $html .= '<tr class="item">';
+
+                $html .= '
+                    <td>
+                        <div>' . date("d M Y", strtotime($stock['created_at'])) . '</div>
+                        <div>
+                            <div class="sub_title">Price / Unit</div>
+                            <div>MK ' . number_format((float)$stock['price_per_unit']) . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title">Checked By</div>
+                            <div>' . $stock['checked_by'] . '</div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>' . number_format($stock['quantity']) . '</div>
+                        <div>
+                            <div class="sub_title">Total Amount</div>
+                            <div>MK ' . number_format((float)$stock['total_amount']) . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title">Issued By</div>
+                            <div>' . $stock['issued_by'] . '</div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div></div>
+                        <div>
+                            <div class="sub_title">Supplier</div>
+                            <div>' . $stock['supplier'] . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title">Remarks</div>
+                            <div>' . $stock['remarks'] . '</div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>' . number_format($stock['in_balance']) . '</div>
+                        <div>
+                            <div class="sub_title">Deliverd By</div>
+                            <div>' . $stock['deliverd_by'] . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title"></div>
+                            <div></div>
+                        </div>
+                    </td>
+                ';
+
+                $html .= '</tr>';
+            } else {
+                $html .= '<tr class="item">';
+
+                $html .= '
+                    <td>
+                        <div>' . date("d M Y", strtotime($stock['created_at'])) . '</div>
+                        <div>
+                            <div class="sub_title">Purpose</div>
+                            <div>' . $stock['purpose'] . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title"></div>
+                            <div></div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div></div>
+                        <div>
+                            <div class="sub_title">Requested By</div>
+                            <div>' . $stock['requested_by'] . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title"></div>
+                            <div></div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>' . number_format($stock['quantity']) . '</div>
+                        <div>
+                            <div class="sub_title">Checked By</div>
+                            <div>' . $stock['checked_by'] . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title"></div>
+                            <div></div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>' . number_format($stock['out_balance']) . '</div>
+                        <div>
+                            <div class="sub_title">Distributed By</div>
+                            <div>' . $stock['distributed_by'] . '</div>
+                        </div>
+                        <div>
+                            <div class="sub_title"></div>
+                            <div></div>
+                        </div>
+                    </td>
+                ';
+
+                $html .= '</tr>';
+            }
+        }
+
+        $html .= '
+                </table>
+            ';
+    } else if ($_SESSION['report_type'] == "balances") {
         // balances
         $html .= '
                 <div class="main_heading">DYUNI Stores Management</div>

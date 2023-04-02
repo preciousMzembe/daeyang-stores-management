@@ -11,6 +11,7 @@
     text-align: center;
     color: #e09d00;
     padding-top: 10px;
+    text-transform: capitalize;
 }
 .dates{
     text-align: center;
@@ -42,6 +43,11 @@ td {
 }
 .titles{
     color: #8b5a1c;
+}
+.sub_title{
+    font-size: 12px;
+    color: gray;
+    padding-top: 10px;
 }
 .item{
     background-color: ghostwhite;
