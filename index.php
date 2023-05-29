@@ -44,7 +44,7 @@ if (isset($_POST['login'])) {
                     <div class="icon_pane">
                         <img src="./files/icons/logo.png" alt="">
                     </div>
-                    <div class="name_pane">DYUNI Stores Management</div>
+                    <div class="name_pane">DYUNI Inventory Management</div>
                 </div>
 
                 <!-- login details -->

@@ -31,7 +31,7 @@
                 $_SESSION['start_date'] = $_POST['start_date'];
                 $_SESSION['end_date'] = $_POST['end_date'];
             } else {
-                echo "all";
+                $edit_item_details = "error";
             }
         } elseif ($_POST['type'] == "balance") {
             $balances = $database->get_balance_reports($_POST);
@@ -391,9 +391,35 @@
         </div>
     </section>
 
+    <!-- edit item pane from items -->
+    <section class="edit_item_pane">
+        <div class="edit_item_pane_in">
+            <!-- close -->
+            <div class="edit_item_close">
+                <div class="edit_item_name"></div>
+                <div class="edit_item_close_button" onclick="show_edit_item()"><img src="../../files/icons/close.png" alt=""></div>
+            </div>
+
+            <div class="edit_item_title" style="text-align: center;">For A Detaild Report You Need Choose A Specific Item.</div>
+        </div>
+    </section>
+
     <script>
         function download_report() {
             document.location = "pdf.php";
+        }
+
+        // show and hide edit item
+        <?php if (!empty($edit_item_details)) { ?>
+            $(".edit_item_pane").css({
+                "visibility": "visible"
+            });
+        <?php } ?>
+
+        function show_edit_item() {
+            $(".edit_item_pane").css({
+                "visibility": "hidden"
+            });
         }
     </script>
 </body>

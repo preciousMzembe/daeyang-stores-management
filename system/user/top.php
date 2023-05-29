@@ -21,7 +21,7 @@ if (isset($_POST['logout'])) {
     <link rel="icon" type="image/png" href="../../files/icons/logo.png" />
     <link rel="stylesheet" href="./css/top.css">
     <link href="../../files/js/jquery-ui.css" rel="Stylesheet" type="text/css" />
-    <title>DYUNISMS</title>
+    <title>DYUNIIMS</title>
 </head>
 
 <body>
@@ -36,7 +36,7 @@ if (isset($_POST['logout'])) {
         <!-- logo -->
         <div class="logo_pane">
             <img src="../../files//icons/logo.png" alt="">
-            <p>DYUNI StoresMS</p>
+            <p>DYUNI InventoryMS</p>
         </div>
 
         <!-- profile -->

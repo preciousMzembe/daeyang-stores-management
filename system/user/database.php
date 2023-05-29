@@ -110,12 +110,12 @@ class Database
         if ($names) {
             $sql = "SELECT `name` FROM `items` ORDER BY `name`";
         } else {
-            $sql = "SELECT * FROM `items`";
+            $sql = "SELECT * FROM `items` ORDER BY `name`";
         }
 
         // get single item
         if ($name != "all") {
-            $sql = "SELECT * FROM `items` WHERE `name` LIKE '%$name%'";
+            $sql = "SELECT * FROM `items` WHERE `name` LIKE '%$name%' ORDER BY `name`";
         }
 
         $results = mysqli_query($this->conn, $sql);
