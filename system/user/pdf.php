@@ -15,7 +15,7 @@ if (isset($_SESSION['report_array'])) {
         // all
         $html .= '
                 <div class="main_heading">DYUNI Stores Management</div>
-                <div class="sub_heading">' . $_SESSION['item'] . ' Detaild Report</div>
+                <div class="sub_heading">' . $_SESSION['item'] . ' Detailed Report</div>
             ';
 
         if ($_SESSION['start_date'] != "" && $_SESSION['end_date'] != "") {
@@ -268,7 +268,7 @@ if (isset($_SESSION['report_array'])) {
             ';
 
         $html .= '
-            <div class="values">Stock Value: MK <span>' . number_format($stock_value) . '</span></div>
+            <div class="values">Inventory Value: MK <span>' . number_format($stock_value) . '</span></div>
         ';
     } else if ($_SESSION['report_type'] == "stock_out") {
         // stock out

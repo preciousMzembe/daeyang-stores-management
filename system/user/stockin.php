@@ -34,9 +34,9 @@
 
     // stock in process
     if (isset($_POST['stock_in'])) {
-        $errors = $database->stock_in($_POST);
-        if (empty($errors)) {
-            header("location: stockin.php");
+        $stock_in_errors = $database->stock_in($_POST);
+        if (empty($stock_in_errors)) {
+            header("location: items.php");
         }
     }
 
@@ -71,7 +71,7 @@
             <div class="items_list_title">
                 <div class="">Stock In Updates</div>
                 <?php if ($database->user_details['position'] != "admin") { ?>
-                    <div class="add_stock_button" onclick="show_hide_item()">Stock In</div>
+                    <div class="add_stock_button" onclick="show_hide_stock_in()">Stock In</div>
                 <?php } ?>
             </div>
             <div class="items_list_pane">
@@ -162,11 +162,11 @@
     </section>
 
     <!-- Stock in form -->
-    <section class="item_details_pane stock_in_process_pane">
-        <div class="item_details_pane_in">
+    <section class="stock_in_out_item_details_pane stock_in_process_pane">
+        <div class="stock_in_out_item_details_pane_in">
             <!-- close button -->
             <div class="close_pane">
-                <div class="close_button" onclick="show_hide_item()">
+                <div class="close_button" onclick="show_hide_stock_in()">
                     <img src="../../files/icons/close.png" alt="">
                 </div>
             </div>
@@ -202,7 +202,7 @@
                     <div class="">
                         <div class="input_label">Quantity</div>
                         <div><input type="number" min="1" name="quantity" id="" value="<?php echo $_POST['quantity'] ?? "" ?>" required></div>
-                        <div class="error_pane"><?php echo $errors['quantity'] ?? ""; ?></div>
+                        <div class="error_pane"><?php echo $stock_in_errors['quantity'] ?? ""; ?></div>
                     </div>
 
                     <div class="">
@@ -251,21 +251,21 @@
     <script>
         // hide and how item
         // $(".stock_in_process_pane").hide();
-        <?php if (!empty($errors)) { ?>
-            $(".item_details_pane").css({
+        <?php if (!empty($stock_in_errors)) { ?>
+            $(".stock_in_process_pane").css({
                 "visibility": "visible"
             });
         <?php } ?>
 
-        function show_hide_item() {
-            let n = $(".item_details_pane").css("visibility");
+        function show_hide_stock_in() {
+            let n = $(".stock_in_process_pane").css("visibility");
 
             if (n == 'hidden') {
-                $(".item_details_pane").css({
+                $(".stock_in_process_pane").css({
                     "visibility": "visible"
                 });
             } else {
-                $(".item_details_pane").css({
+                $(".stock_in_process_pane").css({
                     "visibility": "hidden"
                 });
             }

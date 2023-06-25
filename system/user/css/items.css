@@ -73,15 +73,26 @@
     width: 20px;
 }
 
-/* items list pane */
-.items_list_title {
+/* items list title and stock in/out pane */
+.items_list_stock{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding-bottom: 20px;
+}
+.items_list_title {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.add_stock_button {
+.stock_in_out_buttons{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.stock_button {
     height: 40px;
     width: 150px;
     color: white;
@@ -91,6 +102,9 @@
     border-radius: 5px;
     background-color: #8b5a1c;
     cursor: pointer;
+}
+.stock_in_button{
+    background-color: #e09d00 !important;
 }
 
 .items_list_pane {

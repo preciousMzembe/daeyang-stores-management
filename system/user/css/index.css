@@ -141,14 +141,16 @@
     width: 100%;
     padding: 20px;
     border-radius: 10px;
-    background-color: whitesmoke;
-    border: 1px solid rgb(230, 230, 230);
+    /* background-color: whitesmoke; */
+    background-color: rgba(255, 0, 0, 0.26);
+    border: 1px solid rgba(175, 3, 3, 0.371);
 }
 
 .items_below_titles {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    color: #8b5a1c;
+    /* color: #8b5a1c; */
+    color: black;
 }
 
 .items_below_item {
@@ -157,11 +159,13 @@
     margin-top: 10px;
     text-transform: capitalize;
     padding: 10px 0px;
-    color: gray;
+    /* color: gray; */
+    color: rgb(62, 55, 55);
     font-size: 14px;
 }
 .items_below_item:hover{
-    background-color: rgb(240, 240, 240);
+    /* background-color: rgb(240, 240, 240); */
+    background-color: rgba(255, 0, 0, 0.047);
 }
 
 /* items overview */

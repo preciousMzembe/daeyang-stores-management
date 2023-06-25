@@ -25,7 +25,7 @@ class Database
     // login function
     function login($data)
     {
-        $errors = [];
+        $errors = "";
 
         $email = $this->clean_input($data['email']);
         $password = $this->clean_input($data['password']);
@@ -37,19 +37,25 @@ class Database
 
         // check email
         if (empty($user)) {
-            $errors['email'] = "wrong email enterd";
+            $errors = "wrong email enterd";
             return $errors;
         }
 
         // check password
         if ($password != $user['password']) {
-            $errors['password'] = "wrong password enterd";
+            $errors = "wrong password enterd";
             return $errors;
         }
 
         // check user status
-        if($user['status'] == 0){
-            $errors['blocked'] = "your account has beed locked, contact the adminstrator for more information.";
+        if ($user['status'] == 0) {
+            $errors = "your account has beed locked, contact the adminstrator for more information.";
+            return $errors;
+        }
+
+        // check user position
+        if ($user['position'] != "developer" && $user['position'] != "admin" && $user['position'] != "user") {
+            $errors = "you are not authorised to access any details";
             return $errors;
         }
 
@@ -58,8 +64,8 @@ class Database
         $results = mysqli_query($this->conn, $sql);
         $system = mysqli_fetch_assoc($results);
 
-        if($system['status'] == 0 && $user['position'] != "developer"){
-            $errors['locked'] = "the system is under maintenance, contact the adminstrator for more information.";
+        if ($system['status'] == 0 && $user['position'] != "developer") {
+            $errors = "the system is under maintenance, contact the adminstrator for more information.";
             return $errors;
         }
 
@@ -68,7 +74,7 @@ class Database
         $_SESSION['user_id'] = $user_id;
 
         // log into the system
-        if ($user['status'] = "1"){
+        if ($user['status'] = "1") {
             header("location: ./system/user/index.php");
         }
     }

@@ -20,13 +20,13 @@
                                     echo 'active';
                                 } ?>" onclick="window.location='items.php'">Items</div>
 
-        <div class="nav_option <?php if (strpos($getWholeUrl, "stockin") == true) {
+        <!-- <div class="nav_option <?php if (strpos($getWholeUrl, "stockin") == true) {
                                     echo 'active';
                                 } ?>" onclick="window.location='stockin.php'">Stock In</div>
 
         <div class="nav_option <?php if (strpos($getWholeUrl, "stockout") == true) {
                                     echo 'active';
-                                } ?>" onclick="window.location='stockout.php'">Stock Out</div>
+                                } ?>" onclick="window.location='stockout.php'">Stock Out</div> -->
 
         <div class="nav_option <?php if (strpos($getWholeUrl, "reports") == true) {
                                     echo 'active';

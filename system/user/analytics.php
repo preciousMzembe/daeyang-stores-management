@@ -57,7 +57,7 @@
                 <canvas id="year_chat"></canvas>
             </div>
             <div class="yearly_total_stock_value">
-                Total Stock Value: <span class="total_stock_value">MK</span>
+                Total Inventory Value: <span class="total_stock_value">MK</span>
             </div>
 
             <!-- years comparison -->

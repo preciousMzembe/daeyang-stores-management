@@ -90,7 +90,7 @@ if (isset($_POST['login'])) {
             <div class="error_cancel">
                 <div onclick="close_popup()"><img src="./files/icons/close.png" alt=""></div>
             </div>
-            <div class="error_message">message</div>
+            <div class="error_message"><?php echo $errors ?? ""; ?></div>
             <div class="error_close">
                 <div onclick="close_popup()">close</div>
             </div>
@@ -100,16 +100,9 @@ if (isset($_POST['login'])) {
     <script src="./files/js/jquery-3.6.3.min.js"></script>
     <script>
         // check if user is blocked or system is locked
-        <?php if (!empty($errors)) {
-            if (!empty($errors['locked'])) { ?>
-                $(".error_message").text("<?php echo $errors['locked'] ?>")
-                $(".error_popup").css("visibility", "visible")
-            <?php }
-            if (!empty($errors['blocked'])) { ?>
-                $(".error_message").text("<?php echo $errors['blocked'] ?>")
-                $(".error_popup").css("visibility", "visible")
-        <?php }
-        } ?>
+        <?php if (!empty($errors)) { ?>
+            $(".error_popup").css("visibility", "visible")
+        <?php } ?>
 
         // close popup
         function close_popup() {

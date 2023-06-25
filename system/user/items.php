@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/items.css">
     <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/stockin.css">
 </head>
 
 <body>
@@ -15,6 +16,25 @@
 
     <!-- databse functions for this file --------------------------------------------- -->
     <?php
+
+    // get all staff
+    $staff = $database->get_staff();
+
+    // stock in process
+    if (isset($_POST['stock_in'])) {
+        $stock_in_errors = $database->stock_in($_POST);
+        if (empty($stock_in_errors)) {
+            header("location: items.php");
+        }
+    }
+
+    // stock out process
+    if (isset($_POST['stock_out'])) {
+        $stock_out_errors = $database->stock_out($_POST);
+        if (empty($stock_out_errors)) {
+            header("location: items.php");
+        }
+    }
 
     // get items
     if (isset($_POST['search_item'])) {
@@ -105,7 +125,15 @@
             </div>
 
             <!-- items list -->
-            <div class="items_list_title">Items List</div>
+            <div class="items_list_stock">
+                <div class="items_list_title">Items List</div>
+                <div class="stock_in_out_buttons">
+                    <?php if ($database->user_details['position'] == "user") { ?>
+                        <div class="stock_button stock_in_button" onclick="show_hide_stock_in()">Stock In</div>
+                        <div class="stock_button" onclick="show_hide_stock_out()">Stock Out</div>
+                    <?php } ?>
+                </div>
+            </div>
             <div class="items_list_pane">
                 <!-- check if there are items in the database -->
                 <?php if (!empty($items)) { ?>
@@ -129,7 +157,9 @@
                             <!-- <div><?php echo date("d M Y", strtotime($item['stock_out_date']) ?? "") ?></div> -->
                             <div class="view_item_buttons">
                                 <div class="view_item_button" onclick="get_item('<?php echo $item['name'] ?>')">view</div>
-                                <div class="view_item_button edit_item_button" onclick="edit_item('<?php echo $item['name'] ?>')">edit</div>
+                                <?php if ($database->user_details['position'] == "user") { ?>
+                                    <div class="view_item_button edit_item_button" onclick="edit_item('<?php echo $item['name'] ?>')">edit</div>
+                                <?php } ?>
                             </div>
                         </div>
                     <?php } ?>
@@ -144,6 +174,173 @@
             </div>
         </div>
     </section>
+
+    <?php if ($database->user_details['position'] == "user") { ?>
+        <!-- Stock in form -->
+        <section class="stock_in_out_item_details_pane stock_in_process_pane">
+            <div class="stock_in_out_item_details_pane_in">
+                <!-- close button -->
+                <div class="close_pane">
+                    <div class="close_button" onclick="show_hide_stock_in()">
+                        <img src="../../files/icons/close.png" alt="">
+                    </div>
+                </div>
+
+                <!-- stock in form details -->
+                <div class="stock_in_form_title">Stock In Form</div>
+
+                <!-- form details -->
+                <form action="items.php" method="post">
+                    <div class="stock_in_inputs">
+                        <div class="">
+                            <div class="input_label">Item / Stock Name</div>
+                            <div>
+                                <!-- item name selection or new ite entry -->
+                                <select name="item" onchange="if($(this).val()=='customOption'){$(this).hide().prop('disabled',true);$('input[name=item]').show().prop('disabled', false).focus();$(this).val(null);}" required>
+                                    <option></option>
+                                    <option value="customOption">[new item]</option>
+                                    <?php foreach ($items as $item) { ?>
+                                        <option <?php if (!empty($_POST['item']) && $_POST['item'] == $item['name']) {
+                                                    echo "selected";
+                                                } ?> value="<?php echo $item['name'] ?>"><?php echo $item['name'] ?></option>
+                                    <?php } ?>
+                                </select>
+                                <input name="item" style="display:none;" disabled="disabled" onblur="if($(this).val()==''){$(this).hide().prop('disabled',true);$('select[name=item]').show().prop('disabled', false).focus();}" required>
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Supplier</div>
+                            <div><input type="text" name="supplier" id="" value="<?php echo $_POST['supplier'] ?? "" ?>"></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Quantity</div>
+                            <div><input type="number" min="1" name="quantity" id="" value="<?php echo $_POST['quantity'] ?? "" ?>" required></div>
+                            <div class="error_pane"><?php echo $stock_in_errors['quantity'] ?? ""; ?></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Price per Unit</div>
+                            <div><input type="text" data-type="currency" name="price_per_unit" id="currency-field" value="<?php echo $_POST['price_per_unit'] ?? "" ?>"></div>
+                        </div>
+
+                        <!-- <div class="">
+                        <div class="input_label">Total Amount</div>
+                        <div><input type="text" data-type="currency" name="total_amount" id="" value="<?php echo $_POST['total_amount'] ?? "" ?>"></div>
+                    </div> -->
+
+                        <div class="">
+                            <div class="input_label">Remarks</div>
+                            <div><textarea name="remarks" id=""><?php echo $_POST['remarks'] ?? "" ?></textarea></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Deliverd By</div>
+                            <div><input type="text" name="deliverd_by" id="" value="<?php echo $_POST['deliverd_by'] ?? "" ?>"></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Checked By</div>
+                            <div><input type="text" name="checked_by" id="" value="<?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?? "" ?>" readonly></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Issued By</div>
+                            <div><input type="text" name="issued_by" id="" value="<?php echo $_POST['issued_by'] ?? "" ?>"></div>
+                        </div>
+                    </div>
+
+                    <!-- save button -->
+                    <div class="stock_in_inputs stock_in_save_pane">
+                        <div></div>
+                        <div class="stock_in_save_button"><button type="submit" name="stock_in">Save</button></div>
+                        <div></div>
+                    </div>
+                </form>
+
+            </div>
+        </section>
+
+        <!-- Stock out form -->
+        <section class="stock_in_out_item_details_pane stock_out_process_pane">
+            <div class="stock_in_out_item_details_pane_in">
+                <!-- close button -->
+                <div class="close_pane">
+                    <div class="close_button" onclick="show_hide_stock_out()">
+                        <img src="../../files/icons/close.png" alt="">
+                    </div>
+                </div>
+
+                <!-- stock in form details -->
+                <div class="stock_in_form_title">Stock Out Form</div>
+
+                <!-- form details -->
+                <form action="stockout.php" method="POST">
+                    <div class="stock_in_inputs">
+                        <div class="">
+                            <div class="input_label">Item / Stock Name</div>
+                            <div>
+                                <select name="item" id="" required>
+                                    <option value=""></option>
+                                    <?php foreach ($items as $item) { ?>
+                                        <option <?php if (!empty($_POST['item']) && $_POST['item'] == $item['name']) {
+                                                    echo "selected";
+                                                } ?> value="<?php echo $item['name'] ?>"><?php echo $item['name'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Quantity</div>
+                            <div><input type="number" min="1" name="quantity" id="" required value="<?php echo $_POST['quantity'] ?? "" ?>"></div>
+                            <div class="error_pane"><?php echo $stock_out_errors['quantity'] ?? "" ?></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Purpose</div>
+                            <div><textarea name="purpose" id="" cols="30" rows="10">
+                            <?php echo $_POST['purpose'] ?? "" ?>
+                        </textarea></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Requested By</div>
+                            <div>
+                                <select name="requested_by" id="" required>
+                                    <option value=""></option>
+                                    <?php foreach ($staff as $staf) { ?>
+                                        <option <?php if (!empty($_POST['requested_by']) && $_POST['requested_by'] == $staf['fname']." ".$staf['lname']) {
+                                                    echo "selected";
+                                                } ?> value="<?php echo $staf['fname']." ".$staf['lname'] ?>"><?php echo $staf['fname']." ".$staf['lname'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Checked By</div>
+                            <div><input type="text" name="checked_by" id="" value="<?php echo $_POST['checked_by'] ?? "" ?>"></div>
+                        </div>
+
+                        <div class="">
+                            <div class="input_label">Distributed By</div>
+                            <div><input type="text" name="distributed_by" id="" required value="<?php echo $database->user_details['fname'] . " " . $database->user_details['lname'] ?? "" ?>" readonly></div>
+                        </div>
+                    </div>
+
+                    <!-- save button -->
+                    <div class="stock_in_inputs stock_in_save_pane">
+                        <div></div>
+                        <div class="stock_in_save_button"><button type="submit" name="stock_out">Save</button></div>
+                        <div></div>
+                    </div>
+                </form>
+
+            </div>
+        </section>
+    <?php } ?>
 
     <!-- single item details -->
     <section class="item_details_pane">
@@ -207,7 +404,7 @@
                     <div class="item_current_Stock_and_value">
                         <!-- current stock -->
                         <div class="item_current_stock_pane">
-                            <div class="item_current_stock_head">Current Stock</div>
+                            <div class="item_current_stock_head">Inventory</div>
                             <div class="item_current_stock_number"><?php echo $item_details['balance'] ?> <span>units</span></div>
                         </div>
 
@@ -219,7 +416,7 @@
 
                         <!-- stock value -->
                         <div class="item_stock_value">
-                            <div class="item_current_stock_head">Stock Value</div>
+                            <div class="item_current_stock_head">Inventory Value</div>
                             <div class="item_current_stock_number"><span>MK</span> <?php echo number_format((int)$item_details['balance'] * (float)$item_details['price_per_unit']) ?> </div>
                         </div>
 
@@ -336,12 +533,11 @@
                                         </div>
                                     <?php } ?>
 
-                                    <div class="">
-                                        <!-- <div class="item_more_details_title">print</div> -->
+                                    <!-- <div class="">
                                         <div class="item_more_details_detail">
                                             <div class="item_in_out_print_button"><img src="../../files/icons/download.png" alt=""></div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         <?php } ?>
@@ -393,8 +589,51 @@
         <?php } ?>
     </section>
 
+    <script src="../../files/js/currency.js"></script>
     <script>
-        // hide and how item
+        // hide and show stock in
+        <?php if (!empty($stock_in_errors)) { ?>
+            $(".stock_in_process_pane").css({
+                "visibility": "visible"
+            });
+        <?php } ?>
+
+        function show_hide_stock_in() {
+            let n = $(".stock_in_process_pane").css("visibility");
+
+            if (n == 'hidden') {
+                $(".stock_in_process_pane").css({
+                    "visibility": "visible"
+                });
+            } else {
+                $(".stock_in_process_pane").css({
+                    "visibility": "hidden"
+                });
+            }
+        }
+
+        // hide and show stock out
+        <?php if (!empty($stock_out_errors)) { ?>
+            $(".stock_out_process_pane").css({
+                "visibility": "visible"
+            });
+        <?php } ?>
+
+        function show_hide_stock_out() {
+            let n = $(".stock_out_process_pane").css("visibility");
+
+            if (n == 'hidden') {
+                $(".stock_out_process_pane").css({
+                    "visibility": "visible"
+                });
+            } else {
+                $(".stock_out_process_pane").css({
+                    "visibility": "hidden"
+                });
+            }
+        }
+
+        // hide and show item
         <?php if (!empty($item_details)) { ?>
             $(".item_details_pane").css({
                 "visibility": "visible"

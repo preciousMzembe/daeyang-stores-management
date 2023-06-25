@@ -164,10 +164,15 @@
                         <div>
                             <select name="position" id="" required>
                                 <option <?php if (!empty($_POST)) {
+                                            if ($_POST['position'] == "staff") {
+                                                echo "selected";
+                                            }
+                                        } ?> value="staff">Staff</option>
+                                <option <?php if (!empty($_POST)) {
                                             if ($_POST['position'] == "user") {
                                                 echo "selected";
                                             }
-                                        } ?> value="user">User</option>
+                                        } ?> value="user">Manager</option>
                                 <option <?php if (!empty($_POST)) {
                                             if ($_POST['position'] == "admin") {
                                                 echo "selected";

@@ -67,7 +67,7 @@ if (isset($_POST['logout'])) {
                     Items
                 </div>
 
-                <div class="dropdown_option profile_option optional" onclick="window.location='stockin.php'">
+                <!-- <div class="dropdown_option profile_option optional" onclick="window.location='stockin.php'">
                     <img src="../../files/icons/stock2.png" alt="">
                     Stock In
                 </div>
@@ -75,7 +75,7 @@ if (isset($_POST['logout'])) {
                 <div class="dropdown_option profile_option optional" onclick="window.location='stockout.php'">
                     <img src="../../files/icons/stock2.png" alt="">
                     Stock Out
-                </div>
+                </div> -->
 
                 <div class="dropdown_option profile_option optional" onclick="window.location='reports.php'">
                     <img src="../../files/icons/stock2.png" alt="">
@@ -121,8 +121,6 @@ if (isset($_POST['logout'])) {
 
     <script src="../../files/js/jquery-3.6.3.min.js"></script>
     <script type="text/javascript" src="../../files/js/jquery-ui.js"></script>
-    <script type="text/javascript" src="../../files/js/jspdf.min.js"></script>
-    <script type="text/javascript" src="../../files/js/html2canvas.min.js"></script>
     <script>
         function show_profile_dropdown() {
             $(".drop_image").toggleClass("rotate_class");

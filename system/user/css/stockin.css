@@ -1,6 +1,29 @@
 /* stock in form */
-.stock_in_process_pane .item_details_pane_in {
+.stock_in_out_item_details_pane_in {
     height: unset !important;
+}
+
+.stock_in_out_item_details_pane{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.405);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+}
+
+.stock_in_out_item_details_pane_in {
+    width: 80%;
+    height: 80vh;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .stock_in_form_title {

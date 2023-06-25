@@ -317,7 +317,7 @@
                         <?php $stock_value = 0; ?>
                         <?php foreach ($stock_ins as $stock_in) { ?>
                             <?php
-                            // calculate stock value
+                            // calculate inventory value
                             $value = (int)$stock_in['quantity'] * (float)$stock_in['price_per_unit'];
                             $stock_value += $value;
                             ?>
@@ -332,7 +332,7 @@
 
                         <!-- total -->
                         <div class="items_balance_total">
-                            Stock Value: <span>MK <?php echo number_format($stock_value) ?></span>
+                            Inventory Value: <span>MK <?php echo number_format($stock_value) ?></span>
                         </div>
 
                         <!-- print report -->

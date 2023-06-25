@@ -58,6 +58,14 @@ class Database
         }
     }
 
+    // get staff
+    function get_staff(){
+        $sql = "SELECT `fname`, `lname` FROM `users` WHERE `position` = 'staff'";
+        $results = mysqli_query($this->conn, $sql);
+        $staff = mysqli_fetch_all($results, MYSQLI_ASSOC);
+        return $staff;
+    }
+
     // get current stock
     function get_current_stock()
     {

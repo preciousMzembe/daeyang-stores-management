@@ -73,7 +73,7 @@
                         <img src="../../files/icons/stock.png" alt="">
                     </div>
                     <div class="stock_details">
-                        <div class="stock_name">Current Stock</div>
+                        <div class="stock_name">Inventory</div>
                         <div class="stock_number"><?php echo number_format($current_stock) ?></div>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                         <img src="../../files/icons/stock.png" alt="">
                     </div>
                     <div class="stock_details">
-                        <div class="stock_name">Stock Value</div>
+                        <div class="stock_name">Inventory Value</div>
                         <div class="stock_number"><span>MK</span> <?php echo number_format($stock_value) ?></div>
                     </div>
                 </div>
