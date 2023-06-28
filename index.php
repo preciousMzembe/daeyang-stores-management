@@ -67,7 +67,7 @@ if (isset($_POST['login'])) {
                     <div class="form_field">
                         <div class="form_label password_label">
                             <div>Password</div>
-                            <div class="forgot_password">Forgot password?</div>
+                            <!-- <div class="forgot_password">Forgot password?</div> -->
                         </div>
                         <div class="form_input">
                             <input type="password" name="password" value="<?php echo $_POST['password'] ?? ""; ?>" required>

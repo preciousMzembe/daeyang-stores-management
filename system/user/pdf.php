@@ -14,7 +14,7 @@ if (isset($_SESSION['report_array'])) {
     if ($_SESSION['report_type'] == "all") {
         // all
         $html .= '
-                <div class="main_heading">DYUNI Stores Management</div>
+                <div class="main_heading">DYUNI Inventory Management</div>
                 <div class="sub_heading">' . $_SESSION['item'] . ' Detailed Report</div>
             ';
 
@@ -173,7 +173,7 @@ if (isset($_SESSION['report_array'])) {
     } else if ($_SESSION['report_type'] == "balances") {
         // balances
         $html .= '
-                <div class="main_heading">DYUNI Stores Management</div>
+                <div class="main_heading">DYUNI Inventory Management</div>
                 <div class="sub_heading">Balances Report</div>
                 ';
 
@@ -206,7 +206,7 @@ if (isset($_SESSION['report_array'])) {
     } else if ($_SESSION['report_type'] == "stock_in") {
         // stock in
         $html .= '
-                <div class="main_heading">DYUNI Stores Management</div>
+                <div class="main_heading">DYUNI Inventory Management</div>
                 <div class="sub_heading">Stock In Report</div>
                 ';
 
@@ -273,7 +273,7 @@ if (isset($_SESSION['report_array'])) {
     } else if ($_SESSION['report_type'] == "stock_out") {
         // stock out
         $html .= '
-                <div class="main_heading">DYUNI Stores Management</div>
+                <div class="main_heading">DYUNI Inventory Management</div>
                 <div class="sub_heading">Stock Out Report</div>
             ';
 
@@ -346,4 +346,4 @@ $dompdf->loadHtml($html);
 $dompdf->setPaper('A4', 'landscape');
 $dompdf->render();
 $filename = uniqid();
-$dompdf->stream("report_" . $filename . ".pdf");
+$dompdf->stream("dyuni_inventory_management_report_" . $filename . ".pdf");
